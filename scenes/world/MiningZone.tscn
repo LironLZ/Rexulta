@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqigbve1ao0gm"]
+
+[ext_resource type="Script" uid="uid://dvgdby25fe58n" path="res://scripts/mining_zone.gd" id="1_1adbu"]
+
+[node name="MiningZone" type="Node2D"]
+script = ExtResource("1_1adbu")
+
+[node name="OreTimer" type="Timer" parent="."]
+wait_time = 5.0

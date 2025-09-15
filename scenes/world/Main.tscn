@@ -1,0 +1,18 @@
+[gd_scene load_steps=6 format=3 uid="uid://dmlcgcphchq22"]
+
+[ext_resource type="PackedScene" uid="uid://bmgk1kws23rt3" path="res://scenes/world/Arena.tscn" id="1_0nnu2"]
+[ext_resource type="Script" uid="uid://bnay37ii7meh" path="res://scripts/main.gd" id="1_nciap"]
+[ext_resource type="PackedScene" uid="uid://d0jcbav62ao31" path="res://scenes/world/FishingZone.tscn" id="2_nciap"]
+[ext_resource type="PackedScene" uid="uid://bqigbve1ao0gm" path="res://scenes/world/MiningZone.tscn" id="3_10578"]
+[ext_resource type="PackedScene" uid="uid://ctr7remluxy4i" path="res://ui/HUD.tscn" id="4_26o6m"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_nciap")
+
+[node name="Arena" parent="." instance=ExtResource("1_0nnu2")]
+
+[node name="FishingZone" parent="." instance=ExtResource("2_nciap")]
+
+[node name="MiningZone" parent="." instance=ExtResource("3_10578")]
+
+[node name="Hud" parent="." instance=ExtResource("4_26o6m")]

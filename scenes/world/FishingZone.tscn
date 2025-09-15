@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0jcbav62ao31"]
+
+[ext_resource type="Script" uid="uid://bdeit4qv0ct58" path="res://scripts/fishing_zone.gd" id="1_4iq8v"]
+
+[node name="FishingZone" type="Node2D"]
+script = ExtResource("1_4iq8v")
+
+[node name="BiteTimer" type="Timer" parent="."]
+wait_time = 3.0

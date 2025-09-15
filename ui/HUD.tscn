@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctr7remluxy4i"]
+
+[ext_resource type="Script" uid="uid://b0m6np48d43l8" path="res://scripts/hud.gd" id="1_1x8ju"]
+
+[node name="Hud" type="CanvasLayer"]
+script = ExtResource("1_1x8ju")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="HBoxContainer" parent="Root"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="ArenaBtn" type="Button" parent="Root/TopBar"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Arena"
+
+[node name="FishingBtn" type="Button" parent="Root/TopBar"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fishing"
+
+[node name="MiningBtn" type="Button" parent="Root/TopBar"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mining"
+
+[node name="AscendBtn" type="Button" parent="Root/TopBar"]
+layout_mode = 2
+text = "Ascend"
+
+[node name="StatsBox" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+offset_top = 32.0
+offset_right = 40.0
+offset_bottom = 109.0
+
+[node name="GoldLabel" type="Label" parent="Root/StatsBox"]
+layout_mode = 2
+
+[node name="LvlLabel" type="Label" parent="Root/StatsBox"]
+layout_mode = 2
+
+[node name="InvLabel" type="Label" parent="Root/StatsBox"]
+layout_mode = 2

@@ -11,8 +11,14 @@ config_version=5
 [application]
 
 config/name="Valebound"
+run/main_scene="uid://dmlcgcphchq22"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+State="*res://autoload/state.gd"
+Economy="*res://autoload/economy.gd"
 
 [display]
 

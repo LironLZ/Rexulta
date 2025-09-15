@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bmgk1kws23rt3"]
+
+[ext_resource type="PackedScene" uid="uid://1mrdxah3kj8e" path="res://scenes/actors/Player.tscn" id="1_73cya"]
+[ext_resource type="Script" uid="uid://e2kpomnis1gf" path="res://scripts/spawner.gd" id="2_4p07w"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rwl2q"]
+size = Vector2(2000, 15)
+
+[node name="Arena" type="Node2D"]
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(320, 340)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(0, 18.5)
+shape = SubResource("RectangleShape2D_rwl2q")
+
+[node name="Player" parent="." instance=ExtResource("1_73cya")]
+
+[node name="Spawner" type="Node" parent="."]
+script = ExtResource("2_4p07w")
