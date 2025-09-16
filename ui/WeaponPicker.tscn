@@ -1,3 +1,29 @@
-[gd_scene format=3 uid="uid://cso3p3i57p0va"]
+[gd_scene load_steps=2 format=3 uid="uid://cso3p3i57p0va"]
 
-[node name="WeaponPicker" type="Node2D"]
+[ext_resource type="Script" uid="uid://djks2tgcfu77t" path="res://scripts/weapon_picker.gd" id="1_wwpfm"]
+
+[node name="WeaponPicker" type="PopupPanel"]
+oversampling_override = 1.0
+size = Vector2i(107, 100)
+visible = true
+script = ExtResource("1_wwpfm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 103.0
+offset_bottom = 96.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BowBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Bow"
+
+[node name="WandBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Wand"
