@@ -25,7 +25,7 @@ sources/0 = SubResource("TileSetAtlasSource_rwl2q")
 [node name="Arena" type="Node2D"]
 
 [node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(302, 206)
+position = Vector2(302, 203)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
 position = Vector2(0, 18.5)
