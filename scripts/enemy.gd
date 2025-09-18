@@ -11,6 +11,13 @@ const FT_SCENE: PackedScene = preload("res://ui/FloatingText2D.tscn")
 
 func _ready() -> void:
 	add_to_group("enemies")
+	# ensure no inherited tint
+	modulate = Color.WHITE
+	self_modulate = Color.WHITE
+	if is_instance_valid(spr):
+		spr.modulate = Color.WHITE
+		spr.self_modulate = Color.WHITE
+
 
 func apply_hit(dmg: float) -> void:
 	hp -= dmg
@@ -37,3 +44,4 @@ func _die() -> void:
 	State.gold += gold_drop_base
 	State.add_xp(1.0)
 	queue_free()
+	

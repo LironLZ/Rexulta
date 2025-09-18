@@ -4,6 +4,10 @@ extends CharacterBody2D
 @export var autorun: bool = true                    # ignored while ENGAGE is active
 @export var gravity_multiplier: float = 1.0
 
+# Ground alignment
+@export var ground_mask: int = 1        # Physics layer for ground
+@export var snap_probe_up: float = 200  # Ray starts this far above the player
+
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") as float
 
 # combat cadence (reuse your Economy cadence)
@@ -13,6 +17,12 @@ var _fire_accum := 0.0
 enum { RUN, ENGAGE }
 var _state := RUN
 var _target: Node2D = null
+
+func _ready() -> void:
+	# Help the body stick to floors (useful for pixel art platforms)
+	floor_snap_length = 6.0
+	# One-time precise placement so feet sit on the ground line
+	_snap_to_ground()
 
 func _physics_process(delta: float) -> void:
 	# --- horizontal movement ---
@@ -59,11 +69,11 @@ func _would_hit_enemy_this_frame(delta: float) -> bool:
 		return false
 	var motion := Vector2(step, 0)
 	if test_move(global_transform, motion):
-		# narrow it to enemies via ray on enemy layer (layer 3 => bit 1<<(3-1) = 1<<2)
+		# Narrow to enemies via a short ray on the enemy layer (Layer 3 => bit 1<<(3-1)=1<<2)
 		var from := global_position
-		var to := from + Vector2(step + 1.0, 0)
+		var to := from + Vector2(step + 10.0, 0)
 		var params := PhysicsRayQueryParameters2D.create(from, to)
-		params.collision_mask = 1 << 2  # Layer 3
+		params.collision_mask = 1 << 2
 		var hit := get_viewport().get_world_2d().direct_space_state.intersect_ray(params)
 		return hit.size() > 0
 	return false
@@ -102,3 +112,32 @@ func _unhandled_input(e: InputEvent) -> void:
 	# Optional: toggle autorun with Space/Enter when not engaged
 	if e.is_action_pressed("ui_accept") and _state == RUN:
 		autorun = !autorun
+
+# ---------- Ground snap helpers ----------
+
+func _bottom_margin_world() -> float:
+	# distance from player origin to the bottom of the collider (in world px)
+	var cs := $CollisionShape2D as CollisionShape2D
+	if cs == null or cs.shape == null:
+		return 8.0
+	var half_h := 8.0
+	if cs.shape is RectangleShape2D:
+		half_h = (cs.shape as RectangleShape2D).size.y * 0.5
+	elif cs.shape is CapsuleShape2D:
+		var cap := cs.shape as CapsuleShape2D
+		half_h = cap.height * 0.5 + cap.radius
+	elif cs.shape is CircleShape2D:
+		half_h = (cs.shape as CircleShape2D).radius
+	var scale_y = abs(cs.get_global_transform().get_scale().y)
+	var half_h_world = half_h * scale_y
+	var offset_world := cs.get_global_position().y - global_position.y
+	return offset_world + half_h_world
+
+func _snap_to_ground() -> void:
+	var from := global_position - Vector2(0, snap_probe_up)
+	var to := from + Vector2(0, 4000)
+	var params := PhysicsRayQueryParameters2D.create(from, to)
+	params.collision_mask = ground_mask
+	var hit := get_viewport().get_world_2d().direct_space_state.intersect_ray(params)
+	if hit and hit.has("position"):
+		global_position.y = (hit.position as Vector2).y - _bottom_margin_world()
