@@ -9,7 +9,7 @@ extends CanvasLayer
 @onready var ascend_b: Button = $Root/TopBar/AscendBtn
 
 func _ready() -> void:
-	# Make the mode buttons behave like toggles and avoid keyboard focus outlines.
+	# Toggle behavior & no keyboard focus outlines.
 	for b in [arena_b, fish_b, mine_b]:
 		b.toggle_mode = true
 		b.focus_mode = Control.FOCUS_NONE
@@ -19,18 +19,15 @@ func _ready() -> void:
 	mine_b.pressed.connect(_on_mining)
 	ascend_b.pressed.connect(_on_ascend)
 
-	State.connect("level_up", Callable(self, "_refresh"))
-	State.connect("mode_changed", Callable(self, "_refresh"))
+	State.level_up.connect(_refresh)
+	State.mode_changed.connect(_refresh)
+	State.unlocks_changed.connect(_refresh)
+
 	_refresh()
 
-func _on_arena() -> void:
-	State.set_mode("arena")
-
-func _on_fishing() -> void:
-	State.set_mode("fishing")
-
-func _on_mining() -> void:
-	State.set_mode("mining")
+func _on_arena() -> void:  State.set_mode("arena")
+func _on_fishing() -> void: State.set_mode("fishing")
+func _on_mining() -> void:  State.set_mode("mining")
 
 func _on_ascend() -> void:
 	# Clear any remaining arena enemies, reset run, return to arena.
@@ -43,11 +40,17 @@ func _process(_dt: float) -> void:
 	_refresh()
 
 func _refresh() -> void:
+	# Stats
 	gold_l.text = "Gold: " + String.num(State.gold, 0)
 	lvl_l.text  = "Lv: %d  (XP %.0f)" % [State.level, State.xp]
 	inv_l.text  = "Fish: %d   Ore: %d" % [State.fish, State.ore]
 
-	# Reflect active mode visually.
+	# Unlock-driven visibility
+	fish_b.visible   = State.fishing_unlocked
+	mine_b.visible   = State.mining_unlocked
+	ascend_b.visible = State.ascend_unlocked
+
+	# Active mode visual state
 	var m := State.mode
 	arena_b.button_pressed = (m == "arena")
 	fish_b.button_pressed  = (m == "fishing")

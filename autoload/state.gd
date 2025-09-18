@@ -10,6 +10,12 @@ var fish := 0
 var ore := 0
 var mode := "arena"       # "arena" | "fishing" | "mining"
 
+# -------- Unlocks (UI gating) --------
+signal unlocks_changed
+var fishing_unlocked := false
+var mining_unlocked := false
+var ascend_unlocked := false
+
 # -------- Meta (persists) --------
 var lifetime_xp := 0.0
 var run_xp := 0.0         # XP earned this run only (for class marks)
@@ -69,19 +75,35 @@ func choose_class(id):
 	chosen_class = id
 	save()
 
+# ================= Unlocks =================
+func set_unlocks(fishing: Variant = null, mining: Variant = null, ascend_unl: Variant = null) -> void:
+	var changed := false
+	if fishing != null and fishing_unlocked != fishing:
+		fishing_unlocked = fishing
+		changed = true
+	if mining != null and mining_unlocked != mining:
+		mining_unlocked = mining
+		changed = true
+	if ascend_unl != null and ascend_unlocked != ascend_unl:
+		ascend_unlocked = ascend_unl
+		changed = true
+	if changed:
+		emit_signal("unlocks_changed")
+		save()
+
+
+
 # ================= Modes (for fishing/mining/arena) =================
 func set_mode(new_mode: String) -> void:
 	var allowed := ["arena", "fishing", "mining"]
 	if not allowed.has(new_mode):
 		push_warning("State.set_mode: unknown mode '%s'" % new_mode)
 		return
-
 	if mode == new_mode:
 		return
 	mode = new_mode
 	emit_signal("mode_changed", mode)
 	save()
-
 
 # ================= Ascension =================
 func ascend():
@@ -89,7 +111,7 @@ func ascend():
 	if chosen_class != "":
 		var gained := int(floor(pow(max(0.0, run_xp / 30_000.0), 0.5)))
 		class_marks[chosen_class] += max(gained, 0)
-		# simple mastery: +3% dmg per mark (we'll replace with a proper tree later)
+		# simple mastery: +3% dmg per mark
 		class_mastery[chosen_class].dmg_mult = 1.0 + 0.03 * float(class_marks[chosen_class])
 
 	# reset run layer
@@ -114,11 +136,18 @@ func _maybe_gain_sigil():
 # ================= Save / Load / Offline =================
 func save():
 	var data = {
+		# run
 		"gold": gold, "xp": xp, "level": level,
+		"fish": fish, "ore": ore, "mode": mode,
+		# unlocks
+		"fishing_unlocked": fishing_unlocked,
+		"mining_unlocked": mining_unlocked,
+		"ascend_unlocked": ascend_unlocked,
+		# meta
 		"lifetime_xp": lifetime_xp, "run_xp": run_xp, "sigils": sigils,
 		"class_marks": class_marks, "class_mastery": class_mastery,
 		"chosen_weapon": chosen_weapon, "chosen_class": chosen_class,
-		"fish": fish, "ore": ore, "mode": mode,
+		# timestamp
 		"last_save_unix": Time.get_unix_time_from_system()
 	}
 	var f = FileAccess.open(_save_path, FileAccess.WRITE)
@@ -131,21 +160,28 @@ func load_save():
 	var data = JSON.parse_string(f.get_as_text())
 	if typeof(data) != TYPE_DICTIONARY:
 		return
-		
 
+	# run
 	gold = float(data.get("gold", 0))
 	xp = float(data.get("xp", 0))
 	level = int(data.get("level", 1))
+	fish = int(data.get("fish", 0))
+	ore = int(data.get("ore", 0))
+	mode = String(data.get("mode", "arena"))
+
+	# unlocks
+	fishing_unlocked = bool(data.get("fishing_unlocked", false))
+	mining_unlocked  = bool(data.get("mining_unlocked", false))
+	ascend_unlocked  = bool(data.get("ascend_unlocked", false))
+
+	# meta
 	lifetime_xp = float(data.get("lifetime_xp", 0))
 	run_xp = float(data.get("run_xp", 0))
 	sigils = int(data.get("sigils", 0))
 	class_marks = data.get("class_marks", class_marks)
 	class_mastery = data.get("class_mastery", class_mastery)
 	chosen_weapon = String(data.get("chosen_weapon", ""))
-	chosen_class = String(data.get("chosen_class", ""))
-	fish = int(data.get("fish", 0))
-	ore = int(data.get("ore", 0))
-	mode = String(data.get("mode", "arena"))
+	chosen_class  = String(data.get("chosen_class", ""))
 	last_save_unix = int(data.get("last_save_unix", 0))
 
 	# Offline catch-up (starter): cap at 6h; simulate based on mode at last save
@@ -158,7 +194,8 @@ func load_save():
 			"fishing":
 				fish += int(floor(0.2 * float(capped)))  # ~1 per 5s
 			"mining":
-				ore += int(floor(0.2 * float(capped)))   # ~1 per 5s)
-				var allowed := ["arena", "fishing", "mining"]
-				if not allowed.has(mode):
-					mode = "arena"
+				ore += int(floor(0.2 * float(capped)))   # ~1 per 5s
+	# sanitize mode if save had junk
+	var allowed := ["arena", "fishing", "mining"]
+	if not allowed.has(mode):
+		mode = "arena"
