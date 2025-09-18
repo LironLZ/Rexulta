@@ -1,13 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbltk7t12kdsc"]
+[gd_scene load_steps=4 format=3 uid="uid://bbltk7t12kdsc"]
 
 [ext_resource type="Script" uid="uid://didthspl5iuax" path="res://scripts/enemy.gd" id="1_jq30h"]
 [ext_resource type="Texture2D" uid="uid://bh1yhiplitg7n" path="res://icon.svg" id="2_ay0ne"]
 
-[node name="Enemy" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ay0ne"]
+
+[node name="Enemy" type="StaticBody2D"]
 position = Vector2(535, 278)
+collision_layer = 4
+collision_mask = 2
 script = ExtResource("1_jq30h")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 0, 1)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_ay0ne")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_ay0ne")

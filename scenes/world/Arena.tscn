@@ -30,6 +30,9 @@ size = Vector2(2000, 15)
 
 [node name="Player" parent="." instance=ExtResource("1_73cya")]
 position = Vector2(45, 190)
+move_speed = null
+autorun = null
+gravity_multiplier = null
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(37, -10)
@@ -63,8 +66,15 @@ base_body_path = NodePath("Ground")
 follow_node = NodePath("../Player/Camera2D")
 
 [node name="Ground" type="StaticBody2D" parent="RepeatingGround"]
-position = Vector2(302, 203)
+position = Vector2(0, 203)
+collision_mask = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RepeatingGround/Ground"]
 position = Vector2(0, 18.5)
 shape = SubResource("RectangleShape2D_rwl2q")
+
+[node name="@StaticBody2D@86187" type="StaticBody2D" parent="RepeatingGround"]
+position = Vector2(912, 203)
+
+[node name="@StaticBody2D@86188" type="StaticBody2D" parent="RepeatingGround"]
+position = Vector2(1824, 203)
