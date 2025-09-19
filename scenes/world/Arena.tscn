@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bmgk1kws23rt3"]
+[gd_scene load_steps=13 format=3 uid="uid://bmgk1kws23rt3"]
 
 [ext_resource type="PackedScene" uid="uid://1mrdxah3kj8e" path="res://scenes/actors/Player.tscn" id="1_73cya"]
 [ext_resource type="Texture2D" uid="uid://oor2cguu1fkj" path="res://art/backgrounds/Background.png" id="1_rwl2q"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://ch3gc6j01dqhu" path="res://scripts/repeating_background.gd" id="4_rwl2q"]
 [ext_resource type="Script" uid="uid://buyarfehivuwq" path="res://scripts/repeating_tilemap.gd" id="5_7iynj"]
 [ext_resource type="Script" uid="uid://minop06sq2tw" path="res://scripts/repeating_ground.gd" id="6_7iynj"]
+[ext_resource type="Script" uid="uid://btfp61di8g03v" path="res://scripts/repeating_props.gd" id="8_xlsxk"]
+[ext_resource type="PackedScene" uid="uid://b03bsh3lfuq30" path="res://scenes/props/Mushroom.tscn" id="9_01sj7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rwl2q"]
 texture = ExtResource("3_4p07w")
@@ -73,8 +75,18 @@ collision_mask = 6
 position = Vector2(0, 18.5)
 shape = SubResource("RectangleShape2D_rwl2q")
 
-[node name="@StaticBody2D@86187" type="StaticBody2D" parent="RepeatingGround"]
+[node name="@StaticBody2D@28767" type="StaticBody2D" parent="RepeatingGround"]
 position = Vector2(912, 203)
+collision_mask = 6
 
-[node name="@StaticBody2D@86188" type="StaticBody2D" parent="RepeatingGround"]
+[node name="@StaticBody2D@28768" type="StaticBody2D" parent="RepeatingGround"]
 position = Vector2(1824, 203)
+collision_mask = 6
+
+[node name="RepeatingProps" type="Node2D" parent="."]
+script = ExtResource("8_xlsxk")
+
+[node name="Chunk" type="Node2D" parent="RepeatingProps"]
+
+[node name="Mushroom" parent="RepeatingProps/Chunk" instance=ExtResource("9_01sj7")]
+position = Vector2(32, 222)

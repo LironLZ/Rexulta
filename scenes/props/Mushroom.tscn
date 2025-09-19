@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b03bsh3lfuq30"]
+
+[ext_resource type="Texture2D" uid="uid://ekqxh6evps2q" path="res://art/misc/mushrooms1.png" id="1_wm8wp"]
+
+[node name="Mushroom" type="Sprite2D"]
+texture_filter = 1
+position = Vector2(2, 2)
+texture = ExtResource("1_wm8wp")
