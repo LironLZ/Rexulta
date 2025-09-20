@@ -1,0 +1,100 @@
+[gd_scene load_steps=15 format=3 uid="uid://cf1mgeksoogx7"]
+
+[ext_resource type="Script" uid="uid://cv56igxbenrmd" path="res://scripts/parallex_menu.gd" id="1_xkhvu"]
+[ext_resource type="Texture2D" uid="uid://ji60mlucou3b" path="res://art/menu/1.png" id="2_xkhvu"]
+[ext_resource type="Script" uid="uid://bfptbbopugm50" path="res://scripts/ui_root.gd" id="3_3dyiy"]
+[ext_resource type="Texture2D" uid="uid://bxjqunofgd5ea" path="res://art/menu/play_button.png" id="3_owee5"]
+[ext_resource type="Texture2D" uid="uid://rqjnn58e3as8" path="res://art/menu/settings_button.png" id="4_3sqt6"]
+[ext_resource type="Texture2D" uid="uid://crd2y5ewq3hua" path="res://art/menu/play_button_pressed.png" id="4_if2ld"]
+[ext_resource type="Texture2D" uid="uid://b2ppkri02lcjw" path="res://art/menu/quit_button.png" id="5_3sqt6"]
+[ext_resource type="Texture2D" uid="uid://bgdmla5ilemp4" path="res://art/menu/play_button_hover.png" id="5_7tgft"]
+[ext_resource type="Texture2D" uid="uid://3i5lf8hu6puc" path="res://art/menu/menu_title.png" id="6_3ychl"]
+[ext_resource type="Texture2D" uid="uid://bskobpo87ngrf" path="res://art/menu/quit_button-pressed-export.png" id="6_ueei3"]
+[ext_resource type="Texture2D" uid="uid://dfewpc7gkmrav" path="res://art/menu/quit_button-hover.png" id="7_if2ld"]
+[ext_resource type="Texture2D" uid="uid://ciqi6tnispa53" path="res://art/menu/settings_button-pressed.png" id="7_qe105"]
+[ext_resource type="Texture2D" uid="uid://7nrv4nluu13r" path="res://art/menu/settings_button-hover.png" id="8_3dyiy"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_xkhvu"]
+load_path = "res://.godot/imported/menu_clouds1.png-0a83d28cd829c1e1e5fe277c5137663c.ctex"
+
+[node name="MainMenu" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
+script = ExtResource("1_xkhvu")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+position = Vector2(-40, -35)
+scale = Vector2(1.2, 1.2)
+motion_scale = Vector2(0, 0.1)
+motion_mirroring = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
+position = Vector2(319, 179)
+texture = ExtResource("2_xkhvu")
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(2, 4)
+motion_mirroring = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer3"]
+position = Vector2(321, 90)
+texture = SubResource("CompressedTexture2D_xkhvu")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
+position = Vector2(309, 80)
+texture = ExtResource("6_3ychl")
+
+[node name="UIRoot" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_3dyiy")
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/UIRoot"]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 219.0
+offset_right = 498.0
+offset_bottom = 324.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UIRoot/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/UIRoot/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Play" type="TextureButton" parent="CanvasLayer/UIRoot/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_owee5")
+texture_pressed = ExtResource("4_if2ld")
+texture_hover = ExtResource("5_7tgft")
+texture_disabled = ExtResource("3_owee5")
+texture_focused = ExtResource("3_owee5")
+
+[node name="Settings" type="TextureButton" parent="CanvasLayer/UIRoot/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_3sqt6")
+texture_pressed = ExtResource("7_qe105")
+texture_hover = ExtResource("8_3dyiy")
+texture_disabled = ExtResource("4_3sqt6")
+texture_focused = ExtResource("4_3sqt6")
+
+[node name="Quit" type="TextureButton" parent="CanvasLayer/UIRoot/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("5_3sqt6")
+texture_pressed = ExtResource("6_ueei3")
+texture_hover = ExtResource("7_if2ld")
+texture_disabled = ExtResource("5_3sqt6")
+texture_focused = ExtResource("5_3sqt6")
+
+[connection signal="pressed" from="CanvasLayer/UIRoot/CenterContainer/VBoxContainer/HBoxContainer/Play" to="CanvasLayer/UIRoot" method="_on_play_pressed"]
+[connection signal="pressed" from="CanvasLayer/UIRoot/CenterContainer/VBoxContainer/HBoxContainer/Settings" to="CanvasLayer/UIRoot" method="_on_settings_pressed"]
+[connection signal="pressed" from="CanvasLayer/UIRoot/CenterContainer/VBoxContainer/HBoxContainer/Quit" to="CanvasLayer/UIRoot" method="_on_quit_pressed"]

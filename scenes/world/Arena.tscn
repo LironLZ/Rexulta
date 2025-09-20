@@ -32,9 +32,6 @@ size = Vector2(2000, 15)
 
 [node name="Player" parent="." instance=ExtResource("1_73cya")]
 position = Vector2(45, 190)
-move_speed = null
-autorun = null
-gravity_multiplier = null
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(37, -10)
@@ -75,11 +72,11 @@ collision_mask = 6
 position = Vector2(0, 18.5)
 shape = SubResource("RectangleShape2D_rwl2q")
 
-[node name="@StaticBody2D@28767" type="StaticBody2D" parent="RepeatingGround"]
+[node name="@StaticBody2D@21246" type="StaticBody2D" parent="RepeatingGround"]
 position = Vector2(912, 203)
 collision_mask = 6
 
-[node name="@StaticBody2D@28768" type="StaticBody2D" parent="RepeatingGround"]
+[node name="@StaticBody2D@21247" type="StaticBody2D" parent="RepeatingGround"]
 position = Vector2(1824, 203)
 collision_mask = 6
 
@@ -89,4 +86,4 @@ script = ExtResource("8_xlsxk")
 [node name="Chunk" type="Node2D" parent="RepeatingProps"]
 
 [node name="Mushroom" parent="RepeatingProps/Chunk" instance=ExtResource("9_01sj7")]
-position = Vector2(32, 222)
+position = Vector2(16, 222)

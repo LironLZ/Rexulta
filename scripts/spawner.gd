@@ -107,7 +107,7 @@ func _maybe_spawn() -> void:
 	get_tree().current_scene.add_child(e)
 
 	var enemy_feet_offset := _bottom_margin_world(e)  # origin -> feet (world px)
-	var spawn_pos := Vector2(spawn_x, ground_y - enemy_feet_offset + 15.0)
+	var spawn_pos := Vector2(spawn_x, ground_y - enemy_feet_offset + 16.0)
 	e.global_position = spawn_pos.snapped(Vector2.ONE)
 
 	e.tree_exited.connect(func():

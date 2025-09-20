@@ -109,9 +109,14 @@ func _melee_strike(enemy: Node2D) -> void:
 		enemy.call("apply_hit", dmg)
 
 func _unhandled_input(e: InputEvent) -> void:
-	# Optional: toggle autorun with Space/Enter when not engaged
+	if e.is_action_pressed("ui_fullscreen"):
+		Display.toggle_fullscreen()
+		return
+
+	# existing behavior
 	if e.is_action_pressed("ui_accept") and _state == RUN:
 		autorun = !autorun
+
 
 # ---------- Ground snap helpers ----------
 
