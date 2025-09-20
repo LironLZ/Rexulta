@@ -1,7 +1,32 @@
-[gd_scene load_steps=13 format=3 uid="uid://1mrdxah3kj8e"]
+[gd_scene load_steps=20 format=3 uid="uid://1mrdxah3kj8e"]
 
 [ext_resource type="Script" uid="uid://bk30ikksa55uy" path="res://scripts/player.gd" id="1_xjuxa"]
 [ext_resource type="Texture2D" uid="uid://cgx6hehwax55s" path="res://art/character/walk-sheet.png" id="2_8iu4y"]
+[ext_resource type="Texture2D" uid="uid://csumukmji3jy3" path="res://art/character/sword 2-sheet.png" id="2_df4lg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jndii"]
+atlas = ExtResource("2_df4lg")
+region = Rect2(0, 0, 80, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u4ili"]
+atlas = ExtResource("2_df4lg")
+region = Rect2(80, 0, 80, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6cyea"]
+atlas = ExtResource("2_df4lg")
+region = Rect2(160, 0, 80, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phxw6"]
+atlas = ExtResource("2_df4lg")
+region = Rect2(240, 0, 80, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yi6s0"]
+atlas = ExtResource("2_df4lg")
+region = Rect2(320, 0, 80, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4dtpl"]
+atlas = ExtResource("2_df4lg")
+region = Rect2(400, 0, 80, 60)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_df4lg"]
 atlas = ExtResource("2_8iu4y")
@@ -37,6 +62,29 @@ region = Rect2(560, 0, 80, 60)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_jndii"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jndii")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u4ili")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6cyea")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phxw6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yi6s0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4dtpl")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 10.0
+}, {
 "frames": [],
 "loop": true,
 "name": &"default",
@@ -69,7 +117,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk",
-"speed": 8.0
+"speed": 10.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8iu4y"]

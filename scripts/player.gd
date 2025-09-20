@@ -2,22 +2,23 @@
 extends CharacterBody2D
 
 @export var move_speed: float = 180.0
-@export var autorun: bool = true                    # ignored while ENGAGE is active
+@export var autorun: bool = true
 @export var gravity_multiplier: float = 1.0
 
 # Ground alignment
-@export var ground_mask: int = 1        # Physics layer for ground
-@export var snap_probe_up: float = 200  # Ray starts this far above the player
+@export var ground_mask: int = 1
+@export var snap_probe_up: float = 200
 
-# Animation names (match your SpriteFrames)
-@export var idle_anim := "idle"         # optional; we'll fallback if missing
-@export var walk_anim := "walk"         # required
+# Animation names (must match SpriteFrames on $Sprite)
+@export var idle_anim  := "idle"     # optional; will fallback if missing
+@export var walk_anim  := "walk"     # required
+@export var attack_anim := "attack"  # non-looping
 
 @onready var anim: AnimatedSprite2D = $Sprite
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") as float
 
-# combat cadence (reuse your Economy cadence)
+# combat cadence
 var _fire_accum := 0.0
 
 # run → engage state
@@ -25,28 +26,30 @@ enum { RUN, ENGAGE }
 var _state := RUN
 var _target: Node2D = null
 
+# animation state
+var _attacking := false   # true while 'attack' is playing once
+
 func _ready() -> void:
-	# Help the body stick to floors (useful for pixel art platforms)
 	floor_snap_length = 6.0
-	# One-time precise placement so feet sit on the ground line
 	_snap_to_ground()
 
-	# --- ensure animation is actually playing from the start ---
 	if is_instance_valid(anim) and anim.sprite_frames:
 		anim.speed_scale = 1.0
 		if anim.sprite_frames.has_animation(walk_anim):
-			anim.play(walk_anim)  # start walking immediately; autorun moves us
+			anim.play(walk_anim)
 		elif anim.sprite_frames.has_animation(idle_anim):
 			anim.play(idle_anim)
 		elif anim.sprite_frames.has_animation("default"):
 			anim.play("default")
+		# return to locomotion after one attack cycle
+		anim.animation_finished.connect(_on_anim_finished)
 
 func _physics_process(delta: float) -> void:
 	# --- horizontal movement ---
 	if _state == RUN and autorun:
 		velocity.x = move_speed
 	else:
-		velocity.x = 0.0  # stop while ENGAGE or autorun off
+		velocity.x = 0.0
 
 	# --- gravity / floor stick ---
 	if not is_on_floor():
@@ -54,7 +57,7 @@ func _physics_process(delta: float) -> void:
 	elif velocity.y > 0.0:
 		velocity.y = 0.0
 
-	# --- proactively stop if we WOULD hit an enemy this step (prevents ghosting) ---
+	# --- proactively stop if we WOULD hit an enemy this step ---
 	if _state == RUN and autorun and _would_hit_enemy_this_frame(delta):
 		velocity.x = 0.0
 
@@ -69,13 +72,13 @@ func _physics_process(delta: float) -> void:
 				_start_engage(enemy)
 				break
 
-	# --- melee-only cadence while ENGAGE ---
+	# --- melee cadence while ENGAGE ---
 	if _state == ENGAGE and is_instance_valid(_target):
 		_fire_accum += delta
 		var sps = max(0.001, Economy.shots_per_second())
 		if _fire_accum >= (1.0 / sps):
 			_fire_accum = 0.0
-			_melee_strike(_target)
+			_melee_strike(_target)   # also triggers attack anim
 	else:
 		_fire_accum = 0.0
 
@@ -86,32 +89,46 @@ func _update_animation() -> void:
 	if not is_instance_valid(anim) or anim.sprite_frames == null:
 		return
 
-	# Face direction (your sheet faces RIGHT)
-	if velocity.x != 0.0:
+	# Face target during ENGAGE, else face move direction
+	if _state == ENGAGE and is_instance_valid(_target):
+		anim.flip_h = (_target.global_position.x < global_position.x)
+	elif velocity.x != 0.0:
 		anim.flip_h = velocity.x < 0.0
+
+	# While attack is playing, don't override it
+	if _attacking and anim.animation == attack_anim and anim.is_playing():
+		return
 
 	var moving = (_state == RUN and abs(velocity.x) > 1.0)
 
 	if moving:
-		# Force play 'walk' if present; otherwise just keep whatever is playing
 		if anim.sprite_frames.has_animation(walk_anim):
 			if anim.animation != walk_anim or !anim.is_playing():
 				anim.play(walk_anim)
 	else:
-		# Choose a safe idle fallback
 		var idle_name := idle_anim if anim.sprite_frames.has_animation(idle_anim) \
 			else ("default" if anim.sprite_frames.has_animation("default") else walk_anim)
 		if anim.animation != idle_name or !anim.is_playing():
 			anim.play(idle_name)
 
+func _play_attack() -> void:
+	if not is_instance_valid(anim) or anim.sprite_frames == null:
+		return
+	if anim.sprite_frames.has_animation(attack_anim):
+		_attacking = true
+		anim.play(attack_anim)  # make sure this clip is set to Loop = Off in SpriteFrames
+
+func _on_anim_finished() -> void:
+	# Attack finished → clear flag and resume locomotion
+	if anim.animation == attack_anim:
+		_attacking = false
+
 func _would_hit_enemy_this_frame(delta: float) -> bool:
-	# Use the body's own shape to test a tiny advance this frame.
 	var step = min(move_speed * delta, 4.0)
 	if step <= 0.0:
 		return false
 	var motion := Vector2(step, 0)
 	if test_move(global_transform, motion):
-		# Narrow to enemies via a short ray on the enemy layer (Layer 3 => bit 1<<(3-1)=1<<2)
 		var from := global_position
 		var to := from + Vector2(step + 10.0, 0)
 		var params := PhysicsRayQueryParameters2D.create(from, to)
@@ -131,8 +148,9 @@ func _enemy_root_from(obj: Object) -> Node2D:
 func _start_engage(enemy: Node2D) -> void:
 	_state = ENGAGE
 	_target = enemy
-	# one-shot connect to resume when the enemy leaves
 	_target.tree_exited.connect(_on_target_exited, Object.CONNECT_ONE_SHOT)
+	# optional: play an immediate opening slash when we enter ENGAGE
+	_play_attack()
 
 func _on_target_exited() -> void:
 	if _state == ENGAGE:
@@ -142,28 +160,25 @@ func _end_engage() -> void:
 	_state = RUN
 	_target = null
 	_fire_accum = 0.0
+	_attacking = false
 
 func _melee_strike(enemy: Node2D) -> void:
-	# Your original DPS cadence, but only at melee range
 	var shots = max(0.001, Economy.shots_per_second())
 	var dmg = max(1.0, Economy.dps() / shots)
 	if enemy.has_method("apply_hit"):
 		enemy.call("apply_hit", dmg)
+	# trigger the attack animation each strike
+	_play_attack()
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_fullscreen"):
 		Display.toggle_fullscreen()
 		return
-
-	# toggle autorun when not engaging
 	if e.is_action_pressed("ui_accept") and _state == RUN:
 		autorun = !autorun
 
-
 # ---------- Ground snap helpers ----------
-
 func _bottom_margin_world() -> float:
-	# distance from player origin to the bottom of the collider (in world px)
 	var cs := $CollisionShape2D as CollisionShape2D
 	if cs == null or cs.shape == null:
 		return 8.0
