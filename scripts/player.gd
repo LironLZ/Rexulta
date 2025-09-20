@@ -1,3 +1,4 @@
+# player.gd — Godot 4.x
 extends CharacterBody2D
 
 @export var move_speed: float = 180.0
@@ -7,6 +8,12 @@ extends CharacterBody2D
 # Ground alignment
 @export var ground_mask: int = 1        # Physics layer for ground
 @export var snap_probe_up: float = 200  # Ray starts this far above the player
+
+# Animation names (match your SpriteFrames)
+@export var idle_anim := "idle"         # optional; we'll fallback if missing
+@export var walk_anim := "walk"         # required
+
+@onready var anim: AnimatedSprite2D = $Sprite
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") as float
 
@@ -23,6 +30,16 @@ func _ready() -> void:
 	floor_snap_length = 6.0
 	# One-time precise placement so feet sit on the ground line
 	_snap_to_ground()
+
+	# --- ensure animation is actually playing from the start ---
+	if is_instance_valid(anim) and anim.sprite_frames:
+		anim.speed_scale = 1.0
+		if anim.sprite_frames.has_animation(walk_anim):
+			anim.play(walk_anim)  # start walking immediately; autorun moves us
+		elif anim.sprite_frames.has_animation(idle_anim):
+			anim.play(idle_anim)
+		elif anim.sprite_frames.has_animation("default"):
+			anim.play("default")
 
 func _physics_process(delta: float) -> void:
 	# --- horizontal movement ---
@@ -61,6 +78,31 @@ func _physics_process(delta: float) -> void:
 			_melee_strike(_target)
 	else:
 		_fire_accum = 0.0
+
+	# --- visuals/animation ---
+	_update_animation()
+
+func _update_animation() -> void:
+	if not is_instance_valid(anim) or anim.sprite_frames == null:
+		return
+
+	# Face direction (your sheet faces RIGHT)
+	if velocity.x != 0.0:
+		anim.flip_h = velocity.x < 0.0
+
+	var moving = (_state == RUN and abs(velocity.x) > 1.0)
+
+	if moving:
+		# Force play 'walk' if present; otherwise just keep whatever is playing
+		if anim.sprite_frames.has_animation(walk_anim):
+			if anim.animation != walk_anim or !anim.is_playing():
+				anim.play(walk_anim)
+	else:
+		# Choose a safe idle fallback
+		var idle_name := idle_anim if anim.sprite_frames.has_animation(idle_anim) \
+			else ("default" if anim.sprite_frames.has_animation("default") else walk_anim)
+		if anim.animation != idle_name or !anim.is_playing():
+			anim.play(idle_name)
 
 func _would_hit_enemy_this_frame(delta: float) -> bool:
 	# Use the body's own shape to test a tiny advance this frame.
@@ -113,7 +155,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		Display.toggle_fullscreen()
 		return
 
-	# existing behavior
+	# toggle autorun when not engaging
 	if e.is_action_pressed("ui_accept") and _state == RUN:
 		autorun = !autorun
 

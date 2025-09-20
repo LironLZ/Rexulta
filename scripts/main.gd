@@ -1,3 +1,4 @@
+# Main.gd
 extends Node2D
 
 @onready var _arena:   Node = $Arena
@@ -5,19 +6,18 @@ extends Node2D
 @onready var _mining:  Node = $MiningZone
 
 @onready var _menu_layer: CanvasLayer = $MainMenu/CanvasLayer
-@onready var _menu: Control = $MainMenu/CanvasLayer/UIRoot
+@onready var _menu_root: CanvasItem   = $MainMenu/CanvasLayer/MenuRoot
+@onready var _menu: Control           = $MainMenu/CanvasLayer/MenuRoot/UIRoot
 
-# HUD is a CanvasLayer at $Hud
-@onready var _hud_layer: CanvasLayer = $Hud
+@onready var _hud_layer: CanvasLayer  = $Hud
 
 func _ready() -> void:
-	# Menu should work while paused AND be above the HUD
-	_menu_layer.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
-	_menu_layer.layer = 100   # draw on top of everything UI-ish
+	# Menu should render above gameplay and still run while paused.
+	_menu_layer.layer = 100
+	_menu_root.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 
 	State.connect("mode_changed", Callable(self, "_apply_mode"))
 	_apply_mode(State.mode)
-
 	_enter_menu()
 
 	if is_instance_valid(_menu):
@@ -25,40 +25,42 @@ func _ready() -> void:
 		_menu.settings_requested.connect(_on_settings_requested)
 		_menu.quit_requested.connect(_on_quit_requested)
 
-# --- helpers to toggle HUD ---
+# Recursively show/hide + enable/disable a subtree
+func _toggle_menu(on: bool) -> void:
+	if not is_instance_valid(_menu_root): return
+	_menu_root.visible = on
+	_menu_root.process_mode = Node.PROCESS_MODE_WHEN_PAUSED if on else Node.PROCESS_MODE_DISABLED
+	for child in _menu_root.get_children():
+		_toggle_node(child, on)
+
+func _toggle_node(n: Node, on: bool) -> void:
+	if n is CanvasItem:
+		n.visible = on
+	n.process_mode = Node.PROCESS_MODE_WHEN_PAUSED if on else Node.PROCESS_MODE_DISABLED
+	for c in n.get_children():
+		_toggle_node(c, on)
 
 func _set_hud_visible(v: bool) -> void:
-	if not is_instance_valid(_hud_layer):
-		return
-	# stop the whole HUD from processing / receiving input
 	_hud_layer.process_mode = Node.PROCESS_MODE_INHERIT if v else Node.PROCESS_MODE_DISABLED
-	# hide/show all visible UI under the layer
 	for child in _hud_layer.get_children():
 		if child is CanvasItem:
 			child.visible = v
 
-# --- menu / gameplay switching ---
-
 func _enter_menu() -> void:
 	_set_gameplay_enabled(false)
-	if is_instance_valid(_menu):
-		_menu.visible = true
-		_menu.process_mode = Node.PROCESS_MODE_INHERIT
-	_set_hud_visible(false)          # <<< hide HUD on menu
+	_toggle_menu(true)          # <<< show menu subtree
+	_set_hud_visible(false)
 	get_tree().paused = true
 	if is_instance_valid(_menu) and _menu.has_method("focus_default"):
 		_menu.focus_default()
 
 func _start_game() -> void:
-	if is_instance_valid(_menu):
-		_menu.visible = false
-		_menu.process_mode = Node.PROCESS_MODE_DISABLED
+	_toggle_menu(false)         # <<< hide/disable *entire* menu subtree
 	_set_gameplay_enabled(true)
-	_set_hud_visible(true)           # <<< show HUD in gameplay
+	_set_hud_visible(true)
 	get_tree().paused = false
 	_apply_mode(State.mode)
 
-# --- unchanged below ---
 func _set_gameplay_enabled(enabled: bool) -> void:
 	var pm := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	_arena.process_mode   = pm
