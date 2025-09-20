@@ -73,6 +73,14 @@ collision_mask = 6
 position = Vector2(0, 18.5)
 shape = SubResource("RectangleShape2D_rwl2q")
 
+[node name="@StaticBody2D@44479" type="StaticBody2D" parent="RepeatingGround"]
+position = Vector2(912, 203)
+collision_mask = 6
+
+[node name="@StaticBody2D@44480" type="StaticBody2D" parent="RepeatingGround"]
+position = Vector2(1824, 203)
+collision_mask = 6
+
 [node name="RepeatingProps" type="Node2D" parent="."]
 script = ExtResource("8_xlsxk")
 
@@ -82,6 +90,6 @@ script = ExtResource("8_xlsxk")
 position = Vector2(16, 222)
 
 [node name="Tree" type="Sprite2D" parent="RepeatingProps/Chunk"]
-position = Vector2(-30, 165)
+position = Vector2(-180, 165)
 scale = Vector2(3, 3)
 texture = ExtResource("10_01sj7")

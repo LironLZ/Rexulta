@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddabdl1otpu8m"]
+
+[ext_resource type="Script" uid="uid://didthspl5iuax" path="res://scripts/enemy.gd" id="1_s41qb"]
+[ext_resource type="Texture2D" uid="uid://ca8s6ssljkqqs" path="res://art/mobs/mushroom_mob1-export.png" id="2_s41qb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ay0ne"]
+size = Vector2(54, 58)
+
+[node name="Mushroom" type="StaticBody2D" groups=["enemies"]]
+position = Vector2(539, 286)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_s41qb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 0, 1)
+texture_filter = 1
+position = Vector2(0, 3)
+texture = ExtResource("2_s41qb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-21, 11)
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_ay0ne")

@@ -1,7 +1,11 @@
 # res://scripts/spawner.gd
 extends Node
 
-@export var enemy_scene: PackedScene = preload("res://scenes/actors/Enemy.tscn")
+# --- Enemy pool ---
+@export var enemy_scene:    PackedScene = preload("res://scenes/actors/Enemy.tscn")
+@export var mushroom_scene: PackedScene = preload("res://scenes/actors/Mushroom.tscn")
+@export_range(0.0, 1.0, 0.01) var mushroom_chance: float = 0.50  # % chance to spawn mushroom instead of enemy
+
 @export var respawn_delay: float = 0.8
 
 # Placement
@@ -20,6 +24,7 @@ var _current: Node2D = null
 var _baseline_feet_y: float = NAN   # cached once per Arena entry
 
 func _ready() -> void:
+	randomize()
 	add_child(_timer)
 	_timer.one_shot = true
 	_timer.timeout.connect(_maybe_spawn)
@@ -41,7 +46,7 @@ func _on_mode_changed(m: String) -> void:
 func _cache_baseline_feet_y() -> void:
 	var player := get_node_or_null(player_path) as Node2D
 	if player:
-		_baseline_feet_y = player.global_position.y + _bottom_margin_world(player)
+		_baseline_feet_y = player.global_position.y + _bottom_margin_world(player) + match_y_bias
 	elif use_ground_ray_fallback:
 		var vp := get_viewport()
 		var cam: Camera2D = vp.get_camera_2d()
@@ -53,11 +58,11 @@ func _cache_baseline_feet_y() -> void:
 			params.collision_mask = ground_mask
 			var hit := vp.get_world_2d().direct_space_state.intersect_ray(params)
 			if hit and hit.has("position"):
-				_baseline_feet_y = (hit.position as Vector2).y
+				_baseline_feet_y = (hit.position as Vector2).y + match_y_bias
 	if is_nan(_baseline_feet_y):
 		# last ditch fallback
 		var cam := get_viewport().get_camera_2d()
-		_baseline_feet_y = cam.global_position.y if cam else 0.0
+		_baseline_feet_y = (cam.global_position.y if cam else 0.0) + match_y_bias
 
 # distance from node origin to *bottom* of its collider, in world space
 func _bottom_margin_world(body: Node2D) -> float:
@@ -80,9 +85,14 @@ func _bottom_margin_world(body: Node2D) -> float:
 func _maybe_spawn() -> void:
 	if State.mode != "arena":
 		return
+	# this spawner keeps exactly one enemy alive at a time
 	if get_tree().get_nodes_in_group("enemies").size() > 0:
 		return
-	if is_instance_valid(_current) or enemy_scene == null:
+	if is_instance_valid(_current):
+		return
+
+	var scn: PackedScene = _pick_scene()
+	if scn == null:
 		return
 
 	var vp := get_viewport()
@@ -101,7 +111,7 @@ func _maybe_spawn() -> void:
 	var ground_y := _baseline_feet_y
 
 	# Spawn at exact same floor line as player baseline
-	var e := enemy_scene.instantiate() as Node2D
+	var e := scn.instantiate() as Node2D
 	_current = e
 	e.add_to_group("enemies")
 	get_tree().current_scene.add_child(e)
@@ -115,3 +125,9 @@ func _maybe_spawn() -> void:
 		if State.mode == "arena":
 			_timer.start(respawn_delay)
 	)
+
+func _pick_scene() -> PackedScene:
+	# roll: mushroom or default enemy
+	if mushroom_scene != null and randf() < mushroom_chance:
+		return mushroom_scene
+	return enemy_scene
