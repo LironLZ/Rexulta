@@ -1,9 +1,13 @@
 # player.gd — Godot 4.x
 extends CharacterBody2D
 
-@export var move_speed: float = 180.0
+@export var move_speed: int = 180
 @export var autorun: bool = true
 @export var gravity_multiplier: float = 1.0
+
+# Damage range (inclusive), rolled EVERY hit
+@export var min_damage: int = 1
+@export var max_damage: int = 4
 
 # Ground alignment
 @export var ground_mask: int = 1
@@ -17,6 +21,9 @@ extends CharacterBody2D
 @onready var anim: AnimatedSprite2D = $Sprite
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") as float
+
+# RNG for per-hit rolls
+var _rng := RandomNumberGenerator.new()
 
 # combat cadence
 var _fire_accum := 0.0
@@ -33,6 +40,9 @@ func _ready() -> void:
 	floor_snap_length = 6.0
 	_snap_to_ground()
 
+	# Seed once so each run/session gets its own random stream
+	_rng.randomize()
+
 	if is_instance_valid(anim) and anim.sprite_frames:
 		anim.speed_scale = 1.0
 		if anim.sprite_frames.has_animation(walk_anim):
@@ -41,13 +51,12 @@ func _ready() -> void:
 			anim.play(idle_anim)
 		elif anim.sprite_frames.has_animation("default"):
 			anim.play("default")
-		# return to locomotion after one attack cycle
 		anim.animation_finished.connect(_on_anim_finished)
 
 func _physics_process(delta: float) -> void:
 	# --- horizontal movement ---
 	if _state == RUN and autorun:
-		velocity.x = move_speed
+		velocity.x = float(move_speed)
 	else:
 		velocity.x = 0.0
 
@@ -82,7 +91,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		_fire_accum = 0.0
 
-	# --- visuals/animation ---
 	_update_animation()
 
 func _update_animation() -> void:
@@ -116,10 +124,9 @@ func _play_attack() -> void:
 		return
 	if anim.sprite_frames.has_animation(attack_anim):
 		_attacking = true
-		anim.play(attack_anim)  # make sure this clip is set to Loop = Off in SpriteFrames
+		anim.play(attack_anim)  # Loop = Off in SpriteFrames
 
 func _on_anim_finished() -> void:
-	# Attack finished → clear flag and resume locomotion
 	if anim.animation == attack_anim:
 		_attacking = false
 
@@ -149,7 +156,6 @@ func _start_engage(enemy: Node2D) -> void:
 	_state = ENGAGE
 	_target = enemy
 	_target.tree_exited.connect(_on_target_exited, Object.CONNECT_ONE_SHOT)
-	# optional: play an immediate opening slash when we enter ENGAGE
 	_play_attack()
 
 func _on_target_exited() -> void:
@@ -163,11 +169,12 @@ func _end_engage() -> void:
 	_attacking = false
 
 func _melee_strike(enemy: Node2D) -> void:
-	var shots = max(0.001, Economy.shots_per_second())
-	var dmg = max(1.0, Economy.dps() / shots)
 	if enemy.has_method("apply_hit"):
-		enemy.call("apply_hit", dmg)
-	# trigger the attack animation each strike
+		var lo = min(min_damage, max_damage)
+		var hi = max(min_damage, max_damage)
+		var dmg := _rng.randi_range(lo, hi)  # inclusive each swing
+		enemy.call("apply_hit", float(dmg))
+		# print("per-hit damage:", dmg)
 	_play_attack()
 
 func _unhandled_input(e: InputEvent) -> void:
