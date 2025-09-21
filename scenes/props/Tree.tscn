@@ -4,7 +4,8 @@
 
 [node name="Tree" type="Node2D"]
 z_index = -10
+position = Vector2(31, 476)
 
 [node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(0, 198)
+position = Vector2(8, -35)
 texture = ExtResource("1_v66lu")

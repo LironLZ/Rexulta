@@ -18,6 +18,9 @@ extends Node
 @export var drop_above_px: float = 200.0
 @export var ground_mask: int = 1
 
+@export var pig_scene: PackedScene = preload("res://scenes/actors/Pig.tscn")
+@export_range(0.0, 1.0, 0.01) var pig_chance: float = 0.25
+
 var _current: Node2D = null
 @onready var _timer: Timer = Timer.new()
 
@@ -128,6 +131,8 @@ func _maybe_spawn() -> void:
 
 func _pick_scene() -> PackedScene:
 	# roll: mushroom or default enemy
+	if pig_scene != null and randf() < pig_chance:
+		return pig_scene
 	if mushroom_scene != null and randf() < mushroom_chance:
 		return mushroom_scene
 	return enemy_scene

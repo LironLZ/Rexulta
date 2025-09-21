@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctmgpvxc7x2xn"]
+
+[ext_resource type="Script" uid="uid://btfp61di8g03v" path="res://scripts/repeating_props.gd" id="1_w3qfa"]
+[ext_resource type="PackedScene" uid="uid://cr50n4eqeverh" path="res://scenes/props/Tree.tscn" id="2_dlh3r"]
+
+[node name="Trees" type="Node2D"]
+z_index = -10
+script = ExtResource("1_w3qfa")
+
+[node name="Chunk" type="Node2D" parent="."]
+
+[node name="Tree" parent="Chunk" instance=ExtResource("2_dlh3r")]
+scale = Vector2(1.6113203, 1.6113203)
