@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://ekqxh6evps2q" path="res://art/misc/mushrooms1.png" id="1_wm8wp"]
 
 [node name="Mushroom" type="Sprite2D"]
+z_index = -10
 texture_filter = 1
 position = Vector2(2, 2)
 texture = ExtResource("1_wm8wp")

@@ -8,7 +8,7 @@ extends Node2D
 @onready var _menu_layer: CanvasLayer = $MainMenu/CanvasLayer
 @onready var _menu_root: CanvasItem   = $MainMenu/CanvasLayer/MenuRoot
 @onready var _menu: Control           = $MainMenu/CanvasLayer/MenuRoot/UIRoot
-
+@onready var _hud := $Hud 
 @onready var _hud_layer: CanvasLayer  = $Hud
 
 func _ready() -> void:
@@ -53,12 +53,16 @@ func _enter_menu() -> void:
 	get_tree().paused = true
 	if is_instance_valid(_menu) and _menu.has_method("focus_default"):
 		_menu.focus_default()
+	if is_instance_valid(_hud):
+		_hud.visible = false 
 
 func _start_game() -> void:
 	_toggle_menu(false)         # <<< hide/disable *entire* menu subtree
 	_set_gameplay_enabled(true)
 	_set_hud_visible(true)
 	get_tree().paused = false
+	if is_instance_valid(_hud):
+		_hud.visible = true 
 	_apply_mode(State.mode)
 
 func _set_gameplay_enabled(enabled: bool) -> void:

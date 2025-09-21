@@ -45,7 +45,7 @@ motion_scale = Vector2(2, 4)
 motion_mirroring = Vector2(640, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/MenuRoot/ParallaxBackground/ParallaxLayer3"]
-position = Vector2(321, 90)
+position = Vector2(321, 54)
 texture = SubResource("CompressedTexture2D_xkhvu")
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/MenuRoot"]

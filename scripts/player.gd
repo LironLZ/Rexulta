@@ -172,9 +172,8 @@ func _melee_strike(enemy: Node2D) -> void:
 	if enemy.has_method("apply_hit"):
 		var lo = min(min_damage, max_damage)
 		var hi = max(min_damage, max_damage)
-		var dmg := _rng.randi_range(lo, hi)  # inclusive each swing
+		var dmg := _rng.randi_range(lo, hi) 
 		enemy.call("apply_hit", float(dmg))
-		# print("per-hit damage:", dmg)
 	_play_attack()
 
 func _unhandled_input(e: InputEvent) -> void:
