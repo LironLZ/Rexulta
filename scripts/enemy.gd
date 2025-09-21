@@ -1,4 +1,3 @@
-# res://actors/Enemy.gd
 extends StaticBody2D  # <— was Node2D
 
 @export var hp_max: float = 30.0

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clxa3uejdg3s0"
-path="res://.godot/imported/ui_expansion_button_hover.png-3998eac2ead7d032f59f5ed2bfe59073.ctex"
+uid="uid://d1m3l7ldx04o2"
+path="res://.godot/imported/ui_expander_hover.png-746896ff99d84cab672b7132400841e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/ui/ui_expansion_button_hover.png"
-dest_files=["res://.godot/imported/ui_expansion_button_hover.png-3998eac2ead7d032f59f5ed2bfe59073.ctex"]
+source_file="res://art/ui/ui_expander_hover.png"
+dest_files=["res://.godot/imported/ui_expander_hover.png-746896ff99d84cab672b7132400841e6.ctex"]
 
 [params]
 

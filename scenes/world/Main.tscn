@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dmlcgcphchq22"]
+[gd_scene load_steps=12 format=3 uid="uid://dmlcgcphchq22"]
 
 [ext_resource type="PackedScene" uid="uid://bmgk1kws23rt3" path="res://scenes/world/Arena.tscn" id="1_0nnu2"]
 [ext_resource type="Script" uid="uid://bnay37ii7meh" path="res://scripts/main.gd" id="1_nciap"]
@@ -7,7 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://bqigbve1ao0gm" path="res://scenes/world/MiningZone.tscn" id="3_10578"]
 [ext_resource type="PackedScene" uid="uid://ctr7remluxy4i" path="res://ui/HUD.tscn" id="4_26o6m"]
 [ext_resource type="PackedScene" uid="uid://cso3p3i57p0va" path="res://ui/WeaponPicker.tscn" id="6_10578"]
-[ext_resource type="PackedScene" uid="uid://c54l4b47lo5mr" path="res://scenes/ui/ArrowMenu.tscn" id="7_b3pok"]
+[ext_resource type="PackedScene" uid="uid://bma83vfxhal63" path="res://scenes/ui/ArrowMenuButton.tscn" id="7_b3pok"]
+[ext_resource type="Texture2D" uid="uid://c1r8oe8stkvrr" path="res://art/ui/upgrades_button.png" id="8_56r3f"]
+[ext_resource type="Texture2D" uid="uid://rirqbx7djj6d" path="res://art/ui/upgrades_button_pressed.png" id="9_g1khb"]
+[ext_resource type="Texture2D" uid="uid://csan2oqjn0l25" path="res://art/ui/upgrades_button_hover.png" id="10_ovuor"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_nciap")
@@ -31,7 +34,52 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
-[node name="ArrowMenu" parent="Hud" instance=ExtResource("7_b3pok")]
+[node name="ArrowMenuButton" parent="Hud/HUDRoot" instance=ExtResource("7_b3pok")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -53.0
+offset_top = -50.0
+offset_right = -12.0
+offset_bottom = -11.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="QuickTabs" type="HBoxContainer" parent="Hud/HUDRoot"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -55.0
+offset_right = 115.0
+offset_bottom = -15.0
+grow_vertical = 0
+theme_override_constants/separation = 16
+
+[node name="BtnUpgrades" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+texture_normal = ExtResource("8_56r3f")
+texture_pressed = ExtResource("9_g1khb")
+texture_hover = ExtResource("10_ovuor")
+texture_disabled = ExtResource("8_56r3f")
+texture_focused = ExtResource("8_56r3f")
+
+[node name="BtnCrafting" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnFishing" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnMining" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnSettings" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
 
 [node name="WeaponPicker" parent="." instance=ExtResource("6_10578")]
