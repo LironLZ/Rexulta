@@ -9,18 +9,29 @@ extends CanvasLayer
 @onready var mine_b:   Button = $Root/TopBar/MiningBtn
 @onready var ascend_b: Button = $Root/TopBar/AscendBtn
 
-# ------- New drawer bits (live in Main.tscn under Hud/HUDRoot) -------
-@onready var _arrow_btn: TextureButton = $HUDRoot/ArrowMenuButton
-@onready var _tabs_root: Control       = $HUDRoot/QuickTabs
+# ------- Drawer bits (live in Main.tscn under Hud/HUDRoot) -------
+@onready var _arrow_btn:    TextureButton = $HUDRoot/ArrowMenuButton
+@onready var _tabs_root:    Control       = $HUDRoot/QuickTabs
+@onready var _btn_upgrades: TextureButton = $HUDRoot/QuickTabs/BtnUpgrades
+@onready var _btn_crafting: TextureButton = $HUDRoot/QuickTabs/BtnCrafting
+@onready var _btn_fishing:  TextureButton = $HUDRoot/QuickTabs/BtnFishing
+@onready var _btn_mining:   TextureButton = $HUDRoot/QuickTabs/BtnMining
+@onready var _btn_settings: TextureButton = $HUDRoot/QuickTabs/BtnSettings
+
+# ------- Panels (live in HUD.tscn under Root) -------
+@onready var _panels_root:     Control = $Root/Panels
+@onready var _panel_character: Control = $Root/Panels/CharacterPanel
 
 # Drawer config
-const TABS_Y_STEP := 48      # vertical spacing between items
-const SHOW_TIME   := 0.18    # seconds for tween
-const HIDDEN_POS  := Vector2(-150, 16)   # offscreen position for items
+const SHOW_TIME   := 0.18               # seconds for tween
+const HIDDEN_POS  := Vector2(-160, 0)   # offscreen start/end for items (left)
+const TABS_MARGIN := 16                 # px from screen edges
+
 var _tabs_open := false
+var _open_panel: Control = null
 
 func _ready() -> void:
-	# Root must not eat mouse, and must fill viewport
+	# Root (HUD.tscn) must fill viewport and pass mouse so HUDRoot can catch it
 	var root := $Root as Control
 	if root:
 		root.set_anchors_preset(Control.PRESET_FULL_RECT, true)
@@ -28,41 +39,63 @@ func _ready() -> void:
 	else:
 		push_error("HUD: Missing $Root Control inside Hud.tscn")
 
-	# >>> NEW: make HUDRoot fill the screen too
+	# HUDRoot (in Main.tscn) should fill viewport too
 	var hudroot := $HUDRoot as Control
 	if hudroot:
 		hudroot.set_anchors_preset(Control.PRESET_FULL_RECT, true)
 	else:
 		push_error("HUD: Missing $HUDRoot in Main.tscn under Hud")
 
-	# Top bar setup (unchanged)
+	# Top bar setup
 	for b in [arena_b, fish_b, mine_b]:
 		if b:
 			b.toggle_mode = true
 			b.focus_mode = Control.FOCUS_NONE
-
 	if is_instance_valid(arena_b):  arena_b.pressed.connect(_on_arena)
 	if is_instance_valid(fish_b):   fish_b.pressed.connect(_on_fishing)
 	if is_instance_valid(mine_b):   mine_b.pressed.connect(_on_mining)
 	if is_instance_valid(ascend_b): ascend_b.pressed.connect(_on_ascend)
 
-	# Arrow button
+	# Arrow button bottom-right with exact hitbox
 	if is_instance_valid(_arrow_btn):
 		_arrow_btn.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT, true)
 		_arrow_btn.mouse_filter = Control.MOUSE_FILTER_STOP
 		_arrow_btn.z_index = 100
-		_place_arrow_button(_arrow_btn, 16)   # <<< use offsets, not position
+		_place_bottom_right(_arrow_btn, TABS_MARGIN)
 		_arrow_btn.pressed.connect(_toggle_tabs)
 	else:
 		push_error("HUD: ArrowMenuButton not found at $HUDRoot/ArrowMenuButton")
 
-	# QuickTabs container and initial hide
+	# QuickTabs: bottom-left horizontal row
 	if is_instance_valid(_tabs_root):
 		_tabs_root.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, true)
-		# keep its own (0,0) as the stacking origin; leave offsets default
+		_tabs_root.offset_left   = TABS_MARGIN
+		_tabs_root.offset_bottom = -TABS_MARGIN
+		# Ensure it doesn't stretch strangely
+		if _tabs_root is HBoxContainer:
+			var hb := _tabs_root as HBoxContainer
+			hb.alignment = BoxContainer.ALIGNMENT_END
+			hb.clip_contents = false
 		_set_tabs_visible(false, true)
 	else:
 		push_error("HUD: QuickTabs not found at $HUDRoot/QuickTabs")
+
+	# Hook up quick-tab buttons
+	if is_instance_valid(_btn_upgrades): _btn_upgrades.pressed.connect(_on_tab_character) # reuse the old "Upgrades" button
+	if is_instance_valid(_btn_crafting): _btn_crafting.pressed.connect(_on_tab_crafting)
+	if is_instance_valid(_btn_fishing):  _btn_fishing.pressed.connect(_on_tab_fishing)
+	if is_instance_valid(_btn_mining):   _btn_mining.pressed.connect(_on_tab_mining)
+	if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
+
+	# Panels config (they live under Root/Panels)
+	if is_instance_valid(_panels_root):
+		_panels_root.set_anchors_preset(Control.PRESET_FULL_RECT, true)
+		_panels_root.visible = false
+		_panels_root.mouse_filter = Control.MOUSE_FILTER_STOP
+		_panels_root.z_index = 200
+		_hide_all_panels(true)
+	else:
+		push_error("HUD: Root/Panels not found")
 
 	# State signals
 	if Engine.has_singleton("State"):
@@ -72,16 +105,12 @@ func _ready() -> void:
 
 	_refresh()
 
-# Helper: place a bottom-right anchored control with a pixel margin
-func _place_arrow_button(ctrl: Control, margin_px: int) -> void:
-	# compute the visual size once (so the hitbox matches the art)
+# Place a bottom-right anchored Control with pixel margin and exact hitbox.
+func _place_bottom_right(ctrl: Control, margin_px: int) -> void:
 	var sz := ctrl.size
-	if sz == Vector2.ZERO:
-		# Try to infer from TextureButton art if size hasn't been set yet
-		if "texture_normal" in ctrl and ctrl.texture_normal:
-			sz = ctrl.texture_normal.get_size()
-			ctrl.custom_minimum_size = sz
-	# With anchors at bottom-right, set offsets (margins) like this:
+	if sz == Vector2.ZERO and ctrl.has_method("get") and ctrl.has_property("texture_normal") and ctrl.texture_normal:
+		sz = ctrl.texture_normal.get_size()
+		ctrl.custom_minimum_size = sz
 	ctrl.offset_right  = -margin_px
 	ctrl.offset_bottom = -margin_px
 	ctrl.offset_left   = ctrl.offset_right  - sz.x
@@ -95,7 +124,7 @@ func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventKey and e.pressed and !e.echo and e.keycode == KEY_U:
 		_toggle_tabs()
 
-# ------- Drawer logic -------
+# ------- Drawer logic (slide/fade whole row) -------
 
 func _toggle_tabs() -> void:
 	_tabs_open = !_tabs_open
@@ -105,34 +134,87 @@ func _set_tabs_visible(v: bool, instant: bool) -> void:
 	if !is_instance_valid(_tabs_root):
 		return
 
-	var items: Array[CanvasItem] = []
-	for child in _tabs_root.get_children():
-		if child is CanvasItem:
-			items.append(child as CanvasItem)
+	# We animate the container itself (so children keep their layout).
+	var start_x := HIDDEN_POS.x
+	var end_x   := 0.0
+	var target := end_x if v else start_x
 
-	var i := 0
-	for item in items:
-		item.visible = true
-		item.mouse_filter = Control.MOUSE_FILTER_STOP if item is Control else item.mouse_filter
-		var target_pos := Vector2(0, -i * TABS_Y_STEP)
+	_tabs_root.visible = true
+	if instant:
+		_tabs_root.position = Vector2(target, _tabs_root.position.y)
+		var col := _tabs_root.modulate
+		col.a = (1.0 if v else 0.0)
+		_tabs_root.modulate = col
+		if !v: _tabs_root.visible = false
+	else:
+		var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(_tabs_root, "position:x", target, SHOW_TIME)
+		tw.parallel().tween_property(_tabs_root, "modulate:a", (1.0 if v else 0.0), SHOW_TIME)
+		if !v:
+			tw.tween_callback(func(): _tabs_root.visible = false)
 
-		if instant:
-			item.position = (target_pos if v else HIDDEN_POS)
-			var c := item.modulate
-			c.a = (1.0 if v else 0.0)
-			item.modulate = c
-		else:
-			var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-			tw.tween_property(item, "position", (target_pos if v else HIDDEN_POS), SHOW_TIME)
-			tw.parallel().tween_property(item, "modulate:a", (1.0 if v else 0.0), SHOW_TIME)
-			if !v:
-				tw.tween_callback(func(): item.visible = false)
+# ------- Panels (open/close) -------
 
-		i += 1
+func _hide_all_panels(instant := false) -> void:
+	if !is_instance_valid(_panels_root):
+		return
+	for c in _panels_root.get_children():
+		if c is CanvasItem:
+			if instant:
+				(c as CanvasItem).visible = false
+				(c as CanvasItem).modulate.a = 0.0
+			else:
+				var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+				tw.tween_property(c, "modulate:a", 0.0, SHOW_TIME)
+				tw.tween_callback(func(): (c as CanvasItem).visible = false)
+	_open_panel = null
+	_panels_root.visible = false
+
+func _show_panel(p: Control) -> void:
+	if !is_instance_valid(p):
+		return
+	_panels_root.visible = true
+	# hide others
+	for c in _panels_root.get_children():
+		if c is CanvasItem and c != p:
+			(c as CanvasItem).visible = false
+			(c as CanvasItem).modulate.a = 0.0
+	# fade in selected
+	p.visible = true
+	var col := p.modulate
+	col.a = 0.0
+	p.modulate = col
+	var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
+	_open_panel = p
+
+func _toggle_panel(p: Control) -> void:
+	if _open_panel == p and is_instance_valid(p) and p.visible:
+		_hide_all_panels()
+	else:
+		_show_panel(p)
+
+# ------- Quick tab callbacks -------
+
+func _on_tab_character() -> void:
+	_toggle_panel(_panel_character)
+
+func _on_tab_crafting() -> void:
+	# TODO: hook up Root/Panels/CraftingPanel when you add it
+	_hide_all_panels()
+
+func _on_tab_fishing() -> void:
+	_hide_all_panels()
+
+func _on_tab_mining() -> void:
+	_hide_all_panels()
+
+func _on_tab_settings() -> void:
+	_hide_all_panels()
 
 # ------- Existing behavior -------
 
-func _on_arena() -> void:  State.set_mode("arena")
+func _on_arena() -> void:   State.set_mode("arena")
 func _on_fishing() -> void: State.set_mode("fishing")
 func _on_mining() -> void:  State.set_mode("mining")
 
@@ -159,8 +241,8 @@ func _refresh() -> void:
 
 	var m := State.mode
 	if is_instance_valid(arena_b):
-		arena_b.button_pressed = (m == "arena"); arena_b.disabled = (m == "arena")
+		arena_b.button_pressed = (m == "arena");   arena_b.disabled = (m == "arena")
 	if is_instance_valid(fish_b):
-		fish_b.button_pressed  = (m == "fishing"); fish_b.disabled  = (m == "fishing")
+		fish_b.button_pressed  = (m == "fishing");  fish_b.disabled  = (m == "fishing")
 	if is_instance_valid(mine_b):
-		mine_b.button_pressed  = (m == "mining");  mine_b.disabled  = (m == "mining")
+		mine_b.button_pressed  = (m == "mining");   mine_b.disabled  = (m == "mining")

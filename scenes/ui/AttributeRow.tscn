@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://dn80udkoy2onf"]
+
+[ext_resource type="Script" uid="uid://rkl0ad3afv43" path="res://scripts/AttributeRow.gd" id="1_n4im0"]
+
+[node name="AttributeRow" type="HBoxContainer"]
+script = ExtResource("1_n4im0")
+
+[node name="Icon" type="TextureRect" parent="."]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+
+[node name="Total" type="Label" parent="."]
+layout_mode = 2
+
+[node name="Minus" type="Button" parent="."]
+layout_mode = 2
+
+[node name="Plus" type="Button" parent="."]
+layout_mode = 2

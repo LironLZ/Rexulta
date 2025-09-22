@@ -1,4 +1,3 @@
-# res://autoload/display.gd
 extends Node
 
 var _prev_size: Vector2i = Vector2i(960, 540)

@@ -12,4 +12,4 @@ func _ready() -> void:
 
 func _on_pressed() -> void:
 	open = !open
-	toggled.emit(open)  # we'll use this later to open/close the tabs
+	toggled.emit(open)  

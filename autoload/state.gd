@@ -16,7 +16,7 @@ var fishing_unlocked := false
 var mining_unlocked := false
 var ascend_unlocked := false
 
-# -------- Meta (persists) --------
+# -------- Meta (persists across runs) --------
 var lifetime_xp := 0.0
 var run_xp := 0.0         # XP earned this run only (for class marks)
 var sigils := 0
@@ -28,6 +28,108 @@ var class_mastery := {
 	"rogue":   {"dmg_mult": 1.0},
 	"fighter": {"dmg_mult": 1.0}
 }
+
+# -------- Character sheet (run-layer) --------
+# Signals for Character UI
+signal ability_points_changed(remaining: int)
+signal skill_points_changed(remaining: int)
+signal attribute_changed(key: String, total_value: int)
+signal skill_changed(skill_id: String, rank: int)
+
+# Points
+var ability_points: int = 0
+var skill_points: int = 0
+
+const ABILITY_POINTS_PER_LEVEL := 5
+const SKILL_POINTS_START_LEVEL := 10
+const SKILL_POINTS_PER_LEVEL   := 1
+
+# Attributes (run-layer; base for item/auras; alloc for player distribution)
+var attributes := {
+	"attack":  {"name":"Attack",    "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Increases damage."},
+	"dex":     {"name":"Dexterity", "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Affects crit & speed."},
+	"defense": {"name":"Defense",   "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Reduces damage taken."},
+	"magic":   {"name":"Magic",     "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Boosts magic power."},
+}
+
+func get_attr_total(key: String) -> int:
+	var a = attributes.get(key)
+	return 0 if a == null else int(a.base + a.alloc)
+
+func can_alloc_attr(key: String, delta: int) -> bool:
+	var a = attributes.get(key)
+	if a == null: return false
+	if delta > 0:
+		return ability_points >= delta and a.alloc + delta <= a.max_alloc
+	else:
+		return a.alloc + delta >= 0
+
+func add_attr_alloc(key: String, delta: int) -> bool:
+	if delta == 0: return true
+	if not can_alloc_attr(key, delta): return false
+	attributes[key].alloc += delta
+	ability_points -= delta
+	ability_points_changed.emit(ability_points)
+	attribute_changed.emit(key, get_attr_total(key))
+	save()
+	return true
+
+func refund_attr_alloc(key: String, amount: int = 1) -> bool:
+	var a = attributes.get(key)
+	if a == null or amount <= 0: return false
+	var take = min(amount, a.alloc)
+	if take <= 0: return false
+	a.alloc -= take
+	ability_points += take
+	ability_points_changed.emit(ability_points)
+	attribute_changed.emit(key, get_attr_total(key))
+	save()
+	return true
+
+# Skills (simple example tree; extend as you wish)
+var player_class := "Warrior" # placeholder; separate from chosen_class if you want
+var skills := {
+	"power_strike": {"name":"Power Strike", "max": 5, "rank": 0, "desc":"+% melee damage",         "requires":[]},
+	"iron_skin":    {"name":"Iron Skin",    "max": 5, "rank": 0, "desc":"-% damage taken",          "requires":[{"id":"power_strike","rank":2}]},
+	"battle_cry":   {"name":"Battle Cry",   "max": 3, "rank": 0, "desc":"+party atk (active buff)", "requires":[{"id":"iron_skin","rank":3}]},
+}
+
+func _meets_skill_reqs(skill_id: String) -> bool:
+	var s = skills.get(skill_id)
+	if s == null: return false
+	for req in s.requires:
+		var have = skills.get(req.id, null)
+		if have == null or have.rank < int(req.rank):
+			return false
+	return true
+
+func can_raise_skill(skill_id: String) -> bool:
+	var s = skills.get(skill_id)
+	if s == null: return false
+	if s.rank >= s.max: return false
+	if skill_points <= 0: return false
+	return _meets_skill_reqs(skill_id)
+
+func raise_skill(skill_id: String) -> bool:
+	if not can_raise_skill(skill_id): return false
+	skills[skill_id].rank += 1
+	skill_points -= 1
+	skill_changed.emit(skill_id, skills[skill_id].rank)
+	skill_points_changed.emit(skill_points)
+	save()
+	return true
+
+func refund_skill(skill_id: String, ranks: int = 1) -> bool:
+	var s = skills.get(skill_id)
+	if s == null or ranks <= 0: return false
+	var take = min(ranks, s.rank)
+	if take <= 0: return false
+	s.rank -= take
+	skill_points += take
+	skill_changed.emit(skill_id, s.rank)
+	skill_points_changed.emit(skill_points)
+	save()
+	return true
 
 # -------- Save / offline --------
 var _save_path := "user://save.json"
@@ -59,8 +161,16 @@ func _check_level():
 	while xp >= need:
 		xp -= need
 		level += 1
+		_on_level_gained(level)  # give AP/SP and emit relevant signals
 		emit_signal("level_up", level)
 		need = xp_to_level(level)
+
+func _on_level_gained(new_level: int) -> void:
+	ability_points += ABILITY_POINTS_PER_LEVEL
+	if new_level >= SKILL_POINTS_START_LEVEL:
+		skill_points += SKILL_POINTS_PER_LEVEL
+	ability_points_changed.emit(ability_points)
+	skill_points_changed.emit(skill_points)
 
 func _maybe_emit_class_ready():
 	if level >= 10 and chosen_class == "":
@@ -91,8 +201,6 @@ func set_unlocks(fishing: Variant = null, mining: Variant = null, ascend_unl: Va
 		emit_signal("unlocks_changed")
 		save()
 
-
-
 # ================= Modes (for fishing/mining/arena) =================
 func set_mode(new_mode: String) -> void:
 	var allowed := ["arena", "fishing", "mining"]
@@ -121,6 +229,15 @@ func ascend():
 	xp = 0
 	run_xp = 0
 	level = 1
+	ability_points = 0
+	skill_points = 0
+	# clear allocations (you can choose to carry base via gear later)
+	for k in attributes.keys():
+		attributes[k].alloc = 0
+	# reset skills
+	for id in skills.keys():
+		skills[id].rank = 0
+
 	chosen_weapon = ""
 	chosen_class = ""
 	mode = "arena"
@@ -147,6 +264,11 @@ func save():
 		"lifetime_xp": lifetime_xp, "run_xp": run_xp, "sigils": sigils,
 		"class_marks": class_marks, "class_mastery": class_mastery,
 		"chosen_weapon": chosen_weapon, "chosen_class": chosen_class,
+		# character sheet
+		"ability_points": ability_points,
+		"skill_points": skill_points,
+		"attributes": attributes,
+		"skills": skills,
 		# timestamp
 		"last_save_unix": Time.get_unix_time_from_system()
 	}
@@ -184,6 +306,28 @@ func load_save():
 	chosen_class  = String(data.get("chosen_class", ""))
 	last_save_unix = int(data.get("last_save_unix", 0))
 
+	# character sheet
+	ability_points = int(data.get("ability_points", 0))
+	skill_points   = int(data.get("skill_points", 0))
+
+	# Merge attributes/skills safely (backward compatible)
+	var saved_attrs = data.get("attributes", null)
+	if typeof(saved_attrs) == TYPE_DICTIONARY:
+		for k in attributes.keys():
+			if saved_attrs.has(k):
+				var sa = saved_attrs[k]
+				attributes[k].base  = int(sa.get("base", attributes[k].base))
+				attributes[k].alloc = int(sa.get("alloc", attributes[k].alloc))
+				attributes[k].max_alloc = int(sa.get("max_alloc", attributes[k].max_alloc))
+
+	var saved_skills = data.get("skills", null)
+	if typeof(saved_skills) == TYPE_DICTIONARY:
+		for id in skills.keys():
+			if saved_skills.has(id):
+				var ss = saved_skills[id]
+				skills[id].rank = int(ss.get("rank", skills[id].rank))
+				# keep max/desc/requires from code to avoid save drift
+
 	# Offline catch-up (starter): cap at 6h; simulate based on mode at last save
 	var dt = max(0, Time.get_unix_time_from_system() - last_save_unix)
 	var capped = min(dt, 6 * 3600)
@@ -195,6 +339,7 @@ func load_save():
 				fish += int(floor(0.2 * float(capped)))  # ~1 per 5s
 			"mining":
 				ore += int(floor(0.2 * float(capped)))   # ~1 per 5s
+
 	# sanitize mode if save had junk
 	var allowed := ["arena", "fishing", "mining"]
 	if not allowed.has(mode):

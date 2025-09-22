@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dmlcgcphchq22"]
+[gd_scene load_steps=10 format=3 uid="uid://dmlcgcphchq22"]
 
 [ext_resource type="PackedScene" uid="uid://bmgk1kws23rt3" path="res://scenes/world/Arena.tscn" id="1_0nnu2"]
 [ext_resource type="Script" uid="uid://bnay37ii7meh" path="res://scripts/main.gd" id="1_nciap"]
@@ -8,9 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://ctr7remluxy4i" path="res://ui/HUD.tscn" id="4_26o6m"]
 [ext_resource type="PackedScene" uid="uid://cso3p3i57p0va" path="res://ui/WeaponPicker.tscn" id="6_10578"]
 [ext_resource type="PackedScene" uid="uid://bma83vfxhal63" path="res://scenes/ui/ArrowMenuButton.tscn" id="7_b3pok"]
-[ext_resource type="Texture2D" uid="uid://c1r8oe8stkvrr" path="res://art/ui/upgrades_button.png" id="8_56r3f"]
-[ext_resource type="Texture2D" uid="uid://rirqbx7djj6d" path="res://art/ui/upgrades_button_pressed.png" id="9_g1khb"]
-[ext_resource type="Texture2D" uid="uid://csan2oqjn0l25" path="res://art/ui/upgrades_button_hover.png" id="10_ovuor"]
+[ext_resource type="Texture2D" uid="uid://c65ypmcj6vm6d" path="res://art/ui/character_button.png" id="8_vanwo"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_nciap")
@@ -55,20 +53,20 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = -55.0
-offset_right = 115.0
-offset_bottom = -15.0
+offset_left = 30.0
+offset_top = -56.0
+offset_right = 135.0
+offset_bottom = -16.0
 grow_vertical = 0
 theme_override_constants/separation = 16
 
-[node name="BtnUpgrades" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+[node name="BtnCharacter" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
-texture_normal = ExtResource("8_56r3f")
-texture_pressed = ExtResource("9_g1khb")
-texture_hover = ExtResource("10_ovuor")
-texture_disabled = ExtResource("8_56r3f")
-texture_focused = ExtResource("8_56r3f")
+texture_normal = ExtResource("8_vanwo")
+texture_pressed = ExtResource("8_vanwo")
+texture_hover = ExtResource("8_vanwo")
+texture_disabled = ExtResource("8_vanwo")
+texture_focused = ExtResource("8_vanwo")
 
 [node name="BtnCrafting" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2

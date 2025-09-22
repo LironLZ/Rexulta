@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctr7remluxy4i"]
+[gd_scene load_steps=3 format=3 uid="uid://ctr7remluxy4i"]
 
 [ext_resource type="Script" uid="uid://b0m6np48d43l8" path="res://scripts/hud.gd" id="1_1x8ju"]
+[ext_resource type="PackedScene" uid="uid://bdy7drk4k2qom" path="res://scenes/ui/CharacterPanel.tscn" id="2_aaqae"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_1x8ju")
@@ -57,3 +58,16 @@ layout_mode = 2
 
 [node name="InvLabel" type="Label" parent="Root/StatsBox"]
 layout_mode = 2
+
+[node name="Panels" type="Control" parent="Root"]
+visible = false
+z_index = 200
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CharacterPanel" parent="Root/Panels" instance=ExtResource("2_aaqae")]
+layout_mode = 1
