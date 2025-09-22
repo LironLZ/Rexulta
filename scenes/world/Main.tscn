@@ -60,7 +60,7 @@ offset_bottom = -16.0
 grow_vertical = 0
 theme_override_constants/separation = 16
 
-[node name="BtnCharacter" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+[node name="BtnUpgrades" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
 texture_normal = ExtResource("8_vanwo")
 texture_pressed = ExtResource("8_vanwo")

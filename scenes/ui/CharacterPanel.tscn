@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bdy7drk4k2qom"]
+[gd_scene load_steps=2 format=3 uid="uid://bdy7drk4k2qom"]
+
+[ext_resource type="Texture2D" uid="uid://b8kx18nh45wwf" path="res://art/ui/ingame_gui.png" id="1_o8jqa"]
 
 [node name="CharacterPanel" type="Control"]
 visible = false
@@ -10,36 +12,41 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Margin" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -40.0
+offset_right = 72.0
 offset_bottom = 40.0
+grow_vertical = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 24
 
-[node name="Panel" type="Panel" parent="Margin"]
+[node name="Panel" type="NinePatchRect" parent="Margin"]
+z_index = 200
+custom_minimum_size = Vector2(200, 240)
 layout_mode = 2
+texture = ExtResource("1_o8jqa")
+patch_margin_left = 12
+patch_margin_top = 20
+patch_margin_right = 12
+patch_margin_bottom = 12
 
 [node name="VBox" type="VBoxContainer" parent="Margin/Panel"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Title" type="Label" parent="Margin/Panel/VBox"]
-layout_mode = 2
-text = "Upgrades"
-
-[node name="Body" type="ScrollContainer" parent="Margin/Panel/VBox"]
+[node name="APHeader" type="HBoxContainer" parent="Margin/Panel/VBox"]
 layout_mode = 2
 
-[node name="List" type="GridContainer" parent="Margin/Panel/VBox/Body"]
+[node name="APLabel" type="Label" parent="Margin/Panel/VBox/APHeader"]
+layout_mode = 2
+text = "AP : 0"
+
+[node name="List" type="GridContainer" parent="Margin/Panel/VBox"]
 layout_mode = 2
 columns = 2
-
-[node name="CloseRow" type="HBoxContainer" parent="Margin/Panel/VBox"]
-layout_mode = 2
-
-[node name="CloseBtn" type="Button" parent="Margin/Panel/VBox/CloseRow"]
-layout_mode = 2
-text = "Close"

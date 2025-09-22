@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://csmgs03gds4k8"]
+
+[ext_resource type="Script" uid="uid://bmsa0bcug3qtp" path="res://scripts/skill_button.gd" id="1_6usgm"]
+
+[node name="SkillButton" type="VBoxContainer"]
+size_flags_vertical = 4
+script = ExtResource("1_6usgm")
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+
+[node name="Rank" type="Label" parent="."]
+layout_mode = 2
+
+[node name="Spend" type="Button" parent="."]
+layout_mode = 2
