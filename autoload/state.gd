@@ -329,3 +329,10 @@ func _backfill_points_from_level() -> void:
 	if ability_points < expected:
 		ability_points = expected
 		ability_points_changed.emit(ability_points)
+		
+func get_attack_scaled_range(base_min: int, base_max: int) -> Vector2i:
+	var atk := get_attr_total("attack")        # base + alloc
+	var mult := 1.0 + 0.10 * float(atk)        # +10% per Attack
+	var new_min := int(ceil(float(base_min) * mult))
+	var new_max := int(ceil(float(base_max) * mult))
+	return Vector2i(new_min, new_max)

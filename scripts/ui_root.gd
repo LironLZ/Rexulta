@@ -5,9 +5,9 @@ signal settings_requested
 signal quit_requested
 
 # Buttons (paths are relative to THIS node)
-@onready var btn_play: TextureButton     = get_node_or_null("CenterContainer/HBoxContainer/Play")
-@onready var btn_settings: TextureButton = get_node_or_null("CenterContainer/HBoxContainer/Settings")
-@onready var btn_quit: TextureButton     = get_node_or_null("CenterContainer/HBoxContainer/Quit")
+@onready var btn_play: TextureButton     = get_node_or_null("CenterContainer/VBoxContainer/HBoxContainer/Play")
+@onready var btn_settings: TextureButton = get_node_or_null("CenterContainer/VBoxContainer/HBoxContainer/Settings")
+@onready var btn_quit: TextureButton     = get_node_or_null("CenterContainer/VBoxContainer/HBoxContainer/Quit")
 
 func _ready() -> void:
 	# Focus Play for keyboard/controller

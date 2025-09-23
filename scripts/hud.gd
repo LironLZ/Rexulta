@@ -39,10 +39,11 @@ func _ready() -> void:
 	else:
 		push_error("HUD: Missing $Root Control inside Hud.tscn")
 
-	# HUDRoot (in Main.tscn) should fill viewport too
+	# --- IMPORTANT: HUDRoot must NOT eat clicks (it covers the screen) ---
 	var hudroot := $HUDRoot as Control
 	if hudroot:
 		hudroot.set_anchors_preset(Control.PRESET_FULL_RECT, true)
+		hudroot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # << was STOP by default
 	else:
 		push_error("HUD: Missing $HUDRoot in Main.tscn under Hud")
 
@@ -55,6 +56,18 @@ func _ready() -> void:
 	if is_instance_valid(fish_b):   fish_b.pressed.connect(_on_fishing)
 	if is_instance_valid(mine_b):   mine_b.pressed.connect(_on_mining)
 	if is_instance_valid(ascend_b): ascend_b.pressed.connect(_on_ascend)
+
+	# Ensure TopBar container itself doesn't blanket-clicks
+	var topbar := $Root/TopBar
+	if topbar and topbar is Control:
+		topbar.mouse_filter = Control.MOUSE_FILTER_PASS  # buttons inside will STOP
+
+	# Ensure StatsBox/labels never block input
+	var stats := $Root/StatsBox
+	if stats and stats is Control:
+		stats.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		for n in stats.get_children():
+			if n is Control: n.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	# Arrow button bottom-right with exact hitbox
 	if is_instance_valid(_arrow_btn):
@@ -71,6 +84,7 @@ func _ready() -> void:
 		_tabs_root.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, true)
 		_tabs_root.offset_left   = TABS_MARGIN
 		_tabs_root.offset_bottom = -TABS_MARGIN
+		_tabs_root.mouse_filter = Control.MOUSE_FILTER_PASS  # container passes; buttons stop
 		# Ensure it doesn't stretch strangely
 		if _tabs_root is HBoxContainer:
 			var hb := _tabs_root as HBoxContainer
@@ -91,7 +105,7 @@ func _ready() -> void:
 	if is_instance_valid(_panels_root):
 		_panels_root.set_anchors_preset(Control.PRESET_FULL_RECT, true)
 		_panels_root.visible = false
-		_panels_root.mouse_filter = Control.MOUSE_FILTER_STOP
+		_panels_root.mouse_filter = Control.MOUSE_FILTER_PASS   # << allow children to handle clicks
 		_panels_root.z_index = 200
 		_hide_all_panels(true)
 	else:
@@ -200,7 +214,6 @@ func _on_tab_character() -> void:
 	_toggle_panel(_panel_character)
 
 func _on_tab_crafting() -> void:
-	# TODO: hook up Root/Panels/CraftingPanel when you add it
 	_hide_all_panels()
 
 func _on_tab_fishing() -> void:

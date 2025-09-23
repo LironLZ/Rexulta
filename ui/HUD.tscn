@@ -26,22 +26,26 @@ grow_horizontal = 2
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 text = "Arena"
 
 [node name="FishingBtn" type="Button" parent="Root/TopBar"]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 text = "Fishing"
 
 [node name="MiningBtn" type="Button" parent="Root/TopBar"]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 text = "Mining"
 
 [node name="AscendBtn" type="Button" parent="Root/TopBar"]
 layout_mode = 2
+mouse_filter = 2
 text = "Ascend"
 
 [node name="StatsBox" type="VBoxContainer" parent="Root"]

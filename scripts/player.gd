@@ -209,3 +209,12 @@ func _snap_to_ground() -> void:
 	var hit := get_viewport().get_world_2d().direct_space_state.intersect_ray(params)
 	if hit and hit.has("position"):
 		global_position.y = (hit.position as Vector2).y - _bottom_margin_world()
+
+var base_damage := Vector2i(1, 4)
+
+func get_current_damage_range() -> Vector2i:
+	return State.get_attack_scaled_range(base_damage.x, base_damage.y)
+
+func roll_damage() -> int:
+	var r := get_current_damage_range()
+	return randi_range(r.x, r.y)

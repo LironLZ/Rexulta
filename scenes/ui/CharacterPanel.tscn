@@ -12,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_nd3ua")
 attr_row_scene = ExtResource("2_0t8iq")
 attack_icon = ExtResource("3_hrwq0")
@@ -25,6 +26,7 @@ offset_top = -40.0
 offset_right = 72.0
 offset_bottom = 40.0
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
@@ -44,7 +46,7 @@ patch_margin_bottom = 12
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_constants/margin_left = 16
+theme_override_constants/margin_left = 31
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
@@ -54,6 +56,7 @@ layout_mode = 2
 
 [node name="APHeader" type="HBoxContainer" parent="Margin/Panel/InnerPad/VBox"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="APLabel" type="Label" parent="Margin/Panel/InnerPad/VBox/APHeader"]
 layout_mode = 2

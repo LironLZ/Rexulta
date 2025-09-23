@@ -14,7 +14,13 @@ offset_top = -14.5
 offset_right = 122.0
 offset_bottom = 14.5
 grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
 script = ExtResource("1_n4im0")
+
+[node name="Value" type="Label" parent="."]
+layout_mode = 2
+text = "0"
 
 [node name="Icon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(16, 16)
@@ -28,8 +34,14 @@ text = "Attack"
 [node name="Spacer" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 
-[node name="Plus" type="TextureButton" parent="."]
+[node name="PlusPad" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 0
+theme_override_constants/margin_top = 4
+
+[node name="Plus" type="TextureButton" parent="PlusPad"]
 layout_mode = 2
 texture_normal = ExtResource("2_gf64l")
 texture_pressed = ExtResource("3_ikcol")
