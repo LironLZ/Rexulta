@@ -30,13 +30,11 @@ var class_mastery := {
 }
 
 # -------- Character sheet (run-layer) --------
-# Signals for Character UI
 signal ability_points_changed(remaining: int)
 signal skill_points_changed(remaining: int)
 signal attribute_changed(key: String, total_value: int)
 signal skill_changed(skill_id: String, rank: int)
 
-# Points
 var ability_points: int = 0
 var skill_points: int = 0
 
@@ -44,7 +42,6 @@ const ABILITY_POINTS_PER_LEVEL := 5
 const SKILL_POINTS_START_LEVEL := 10
 const SKILL_POINTS_PER_LEVEL   := 1
 
-# Attributes (run-layer; base for item/auras; alloc for player distribution)
 var attributes := {
 	"attack":  {"name":"Attack",    "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Increases damage."},
 	"dex":     {"name":"Dexterity", "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Affects crit & speed."},
@@ -86,8 +83,8 @@ func refund_attr_alloc(key: String, amount: int = 1) -> bool:
 	save()
 	return true
 
-# Skills (simple example tree; extend as you wish)
-var player_class := "Warrior" # placeholder; separate from chosen_class if you want
+# -------- Skills (example tree) --------
+var player_class := "Warrior" # placeholder
 var skills := {
 	"power_strike": {"name":"Power Strike", "max": 5, "rank": 0, "desc":"+% melee damage",         "requires":[]},
 	"iron_skin":    {"name":"Iron Skin",    "max": 5, "rank": 0, "desc":"-% damage taken",          "requires":[{"id":"power_strike","rank":2}]},
@@ -141,6 +138,7 @@ signal mode_changed(new_mode)
 
 func _ready():
 	load_save()
+	_backfill_points_from_level()   # retro AP for old saves
 	_maybe_emit_class_ready()
 
 # ================= Leveling =================
@@ -161,7 +159,7 @@ func _check_level():
 	while xp >= need:
 		xp -= need
 		level += 1
-		_on_level_gained(level)  # give AP/SP and emit relevant signals
+		_on_level_gained(level)
 		emit_signal("level_up", level)
 		need = xp_to_level(level)
 
@@ -201,7 +199,7 @@ func set_unlocks(fishing: Variant = null, mining: Variant = null, ascend_unl: Va
 		emit_signal("unlocks_changed")
 		save()
 
-# ================= Modes (for fishing/mining/arena) =================
+# ================= Modes =================
 func set_mode(new_mode: String) -> void:
 	var allowed := ["arena", "fishing", "mining"]
 	if not allowed.has(new_mode):
@@ -215,11 +213,9 @@ func set_mode(new_mode: String) -> void:
 
 # ================= Ascension =================
 func ascend():
-	# grant per-class marks based on this run's XP
 	if chosen_class != "":
 		var gained := int(floor(pow(max(0.0, run_xp / 30_000.0), 0.5)))
 		class_marks[chosen_class] += max(gained, 0)
-		# simple mastery: +3% dmg per mark
 		class_mastery[chosen_class].dmg_mult = 1.0 + 0.03 * float(class_marks[chosen_class])
 
 	# reset run layer
@@ -231,10 +227,8 @@ func ascend():
 	level = 1
 	ability_points = 0
 	skill_points = 0
-	# clear allocations (you can choose to carry base via gear later)
 	for k in attributes.keys():
 		attributes[k].alloc = 0
-	# reset skills
 	for id in skills.keys():
 		skills[id].rank = 0
 
@@ -245,7 +239,6 @@ func ascend():
 
 # ================= Meta =================
 func _maybe_gain_sigil():
-	# Sigils scale with lifetime XP (sqrt), +12% dmg each (used in Economy)
 	var target := int(floor(pow(max(0.0, lifetime_xp / 50_000.0), 0.5)))
 	if target > sigils:
 		sigils = target
@@ -253,23 +246,18 @@ func _maybe_gain_sigil():
 # ================= Save / Load / Offline =================
 func save():
 	var data = {
-		# run
 		"gold": gold, "xp": xp, "level": level,
 		"fish": fish, "ore": ore, "mode": mode,
-		# unlocks
 		"fishing_unlocked": fishing_unlocked,
 		"mining_unlocked": mining_unlocked,
 		"ascend_unlocked": ascend_unlocked,
-		# meta
 		"lifetime_xp": lifetime_xp, "run_xp": run_xp, "sigils": sigils,
 		"class_marks": class_marks, "class_mastery": class_mastery,
 		"chosen_weapon": chosen_weapon, "chosen_class": chosen_class,
-		# character sheet
 		"ability_points": ability_points,
 		"skill_points": skill_points,
 		"attributes": attributes,
 		"skills": skills,
-		# timestamp
 		"last_save_unix": Time.get_unix_time_from_system()
 	}
 	var f = FileAccess.open(_save_path, FileAccess.WRITE)
@@ -283,7 +271,6 @@ func load_save():
 	if typeof(data) != TYPE_DICTIONARY:
 		return
 
-	# run
 	gold = float(data.get("gold", 0))
 	xp = float(data.get("xp", 0))
 	level = int(data.get("level", 1))
@@ -291,12 +278,10 @@ func load_save():
 	ore = int(data.get("ore", 0))
 	mode = String(data.get("mode", "arena"))
 
-	# unlocks
 	fishing_unlocked = bool(data.get("fishing_unlocked", false))
 	mining_unlocked  = bool(data.get("mining_unlocked", false))
 	ascend_unlocked  = bool(data.get("ascend_unlocked", false))
 
-	# meta
 	lifetime_xp = float(data.get("lifetime_xp", 0))
 	run_xp = float(data.get("run_xp", 0))
 	sigils = int(data.get("sigils", 0))
@@ -306,11 +291,9 @@ func load_save():
 	chosen_class  = String(data.get("chosen_class", ""))
 	last_save_unix = int(data.get("last_save_unix", 0))
 
-	# character sheet
 	ability_points = int(data.get("ability_points", 0))
 	skill_points   = int(data.get("skill_points", 0))
 
-	# Merge attributes/skills safely (backward compatible)
 	var saved_attrs = data.get("attributes", null)
 	if typeof(saved_attrs) == TYPE_DICTIONARY:
 		for k in attributes.keys():
@@ -326,21 +309,23 @@ func load_save():
 			if saved_skills.has(id):
 				var ss = saved_skills[id]
 				skills[id].rank = int(ss.get("rank", skills[id].rank))
-				# keep max/desc/requires from code to avoid save drift
 
-	# Offline catch-up (starter): cap at 6h; simulate based on mode at last save
+	# Offline catch-up (cap 6h)
 	var dt = max(0, Time.get_unix_time_from_system() - last_save_unix)
 	var capped = min(dt, 6 * 3600)
 	if capped > 0:
 		match mode:
-			"arena":
-				gold += 0.5 * float(capped)   # ~0.5 gold/sec placeholder
-			"fishing":
-				fish += int(floor(0.2 * float(capped)))  # ~1 per 5s
-			"mining":
-				ore += int(floor(0.2 * float(capped)))   # ~1 per 5s
+			"arena":  gold += 0.5 * float(capped)
+			"fishing": fish += int(floor(0.2 * float(capped)))
+			"mining":  ore  += int(floor(0.2 * float(capped)))
 
-	# sanitize mode if save had junk
 	var allowed := ["arena", "fishing", "mining"]
 	if not allowed.has(mode):
 		mode = "arena"
+
+# ----- retro AP for existing saves -----
+func _backfill_points_from_level() -> void:
+	var expected = ABILITY_POINTS_PER_LEVEL * max(0, level - 1)
+	if ability_points < expected:
+		ability_points = expected
+		ability_points_changed.emit(ability_points)

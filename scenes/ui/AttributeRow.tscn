@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://dn80udkoy2onf"]
 
 [ext_resource type="Script" uid="uid://rkl0ad3afv43" path="res://scripts/attribute_row.gd" id="1_n4im0"]
-[ext_resource type="Texture2D" uid="uid://d4b8tb425j5gp" path="res://art/ui/plus.png" id="2_gf64l"]
+[ext_resource type="Texture2D" uid="uid://cgagqvw4dn7c5" path="res://art/ui/plus.png" id="2_gf64l"]
 [ext_resource type="Texture2D" uid="uid://cpu6eavljjc46" path="res://art/ui/attack_icon.png" id="2_ikcol"]
-[ext_resource type="Texture2D" uid="uid://cv6nw5664ux" path="res://art/ui/plus_pressed.png" id="3_ikcol"]
+[ext_resource type="Texture2D" uid="uid://8rf0ibybxecr" path="res://art/ui/plus_pressed.png" id="3_ikcol"]
 
 [node name="AttributeRow" type="HBoxContainer"]
 custom_minimum_size = Vector2(16, 16)
@@ -33,6 +33,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 texture_normal = ExtResource("2_gf64l")
 texture_pressed = ExtResource("3_ikcol")
-texture_hover = ExtResource("2_gf64l")
+texture_hover = ExtResource("3_ikcol")
 texture_disabled = ExtResource("2_gf64l")
 texture_focused = ExtResource("2_gf64l")

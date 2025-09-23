@@ -8,20 +8,23 @@ extends HBoxContainer
 @onready var plus_b:  TextureButton = $Plus
 
 func _ready() -> void:
-	# assign icon if provided
 	if icon:
 		icon_n.texture = icon
-
-	# validate key and set name
+	icon_n.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	icon_n.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	name_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	$Spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	plus_b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	
 	if not State.attributes.has(key):
 		push_error("AttributeRow: unknown key %s" % key)
 		queue_free()
 		return
-	name_l.text = State.attributes[key].name  # "Attack", etc.
 
+	name_l.text = State.attributes[key].name
 	_update_ui()
 
-	# connections
 	plus_b.pressed.connect(_on_plus_pressed)
 	State.ability_points_changed.connect(_on_ap_changed)
 	State.attribute_changed.connect(_on_attr_changed)
@@ -38,5 +41,4 @@ func _on_attr_changed(changed: String, _val: int) -> void:
 		_update_ui()
 
 func _update_ui() -> void:
-	# enable the + button only if you have AP and not at max
 	plus_b.disabled = not State.can_alloc_attr(key, 1)

@@ -1,15 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://bdy7drk4k2qom"]
+[gd_scene load_steps=5 format=3 uid="uid://bdy7drk4k2qom"]
 
+[ext_resource type="Script" uid="uid://dx3rxiyfb34i1" path="res://scripts/character_panel.gd" id="1_nd3ua"]
 [ext_resource type="Texture2D" uid="uid://b8kx18nh45wwf" path="res://art/ui/ingame_gui.png" id="1_o8jqa"]
+[ext_resource type="PackedScene" uid="uid://dn80udkoy2onf" path="res://scenes/ui/AttributeRow.tscn" id="2_0t8iq"]
+[ext_resource type="Texture2D" uid="uid://cpu6eavljjc46" path="res://art/ui/attack_icon.png" id="3_hrwq0"]
 
 [node name="CharacterPanel" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_nd3ua")
+attr_row_scene = ExtResource("2_0t8iq")
+attack_icon = ExtResource("3_hrwq0")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -35,18 +40,25 @@ patch_margin_top = 20
 patch_margin_right = 12
 patch_margin_bottom = 12
 
-[node name="VBox" type="VBoxContainer" parent="Margin/Panel"]
+[node name="InnerPad" type="MarginContainer" parent="Margin/Panel"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="APHeader" type="HBoxContainer" parent="Margin/Panel/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Margin/Panel/InnerPad"]
 layout_mode = 2
 
-[node name="APLabel" type="Label" parent="Margin/Panel/VBox/APHeader"]
+[node name="APHeader" type="HBoxContainer" parent="Margin/Panel/InnerPad/VBox"]
+layout_mode = 2
+
+[node name="APLabel" type="Label" parent="Margin/Panel/InnerPad/VBox/APHeader"]
 layout_mode = 2
 text = "AP : 0"
 
-[node name="List" type="GridContainer" parent="Margin/Panel/VBox"]
+[node name="List" type="GridContainer" parent="Margin/Panel/InnerPad/VBox"]
 layout_mode = 2
 columns = 2
