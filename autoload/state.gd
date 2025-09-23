@@ -18,7 +18,7 @@ var ascend_unlocked := false
 
 # -------- Meta (persists across runs) --------
 var lifetime_xp := 0.0
-var run_xp := 0.0         # XP earned this run only (for class marks)
+var run_xp := 0.0
 var sigils := 0
 var class_marks := {"warrior":0, "archer":0, "mage":0, "rogue":0, "fighter":0}
 var class_mastery := {
@@ -42,11 +42,12 @@ const ABILITY_POINTS_PER_LEVEL := 5
 const SKILL_POINTS_START_LEVEL := 10
 const SKILL_POINTS_PER_LEVEL   := 1
 
+# NOTE: We keep internal keys the same, only the user-facing names change
 var attributes := {
-	"attack":  {"name":"Attack",    "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Increases damage."},
-	"dex":     {"name":"Dexterity", "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Affects crit & speed."},
-	"defense": {"name":"Defense",   "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Reduces damage taken."},
-	"magic":   {"name":"Magic",     "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Boosts magic power."},
+	"attack":  {"name":"Attack",       "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Increases damage."},
+	"dex":     {"name":"Dexterity",    "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Affects crit & speed."},
+	"defense": {"name":"Defence",      "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Reduces damage taken."},
+	"magic":   {"name":"Intelligence", "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Boosts magic power."},
 }
 
 func get_attr_total(key: String) -> int:
@@ -84,7 +85,7 @@ func refund_attr_alloc(key: String, amount: int = 1) -> bool:
 	return true
 
 # -------- Skills (example tree) --------
-var player_class := "Warrior" # placeholder
+var player_class := "Warrior"
 var skills := {
 	"power_strike": {"name":"Power Strike", "max": 5, "rank": 0, "desc":"+% melee damage",         "requires":[]},
 	"iron_skin":    {"name":"Iron Skin",    "max": 5, "rank": 0, "desc":"-% damage taken",          "requires":[{"id":"power_strike","rank":2}]},
@@ -138,12 +139,12 @@ signal mode_changed(new_mode)
 
 func _ready():
 	load_save()
-	_backfill_points_from_level()   # retro AP for old saves
+	_backfill_points_from_level()
 	_maybe_emit_class_ready()
 
 # ================= Leveling =================
 func xp_to_level(n):
-	return int(floor(30.0 * pow(n, 2.2)))  # quick to 10
+	return int(floor(30.0 * pow(n, 2.2)))
 
 func add_xp(amount):
 	xp += amount
@@ -218,7 +219,6 @@ func ascend():
 		class_marks[chosen_class] += max(gained, 0)
 		class_mastery[chosen_class].dmg_mult = 1.0 + 0.03 * float(class_marks[chosen_class])
 
-	# reset run layer
 	gold = 0
 	fish = 0
 	ore = 0
@@ -315,7 +315,7 @@ func load_save():
 	var capped = min(dt, 6 * 3600)
 	if capped > 0:
 		match mode:
-			"arena":  gold += 0.5 * float(capped)
+			"arena":   gold += 0.5 * float(capped)
 			"fishing": fish += int(floor(0.2 * float(capped)))
 			"mining":  ore  += int(floor(0.2 * float(capped)))
 
@@ -329,10 +329,11 @@ func _backfill_points_from_level() -> void:
 	if ability_points < expected:
 		ability_points = expected
 		ability_points_changed.emit(ability_points)
-		
+
+# +10% damage per Attack (rounded up)
 func get_attack_scaled_range(base_min: int, base_max: int) -> Vector2i:
-	var atk := get_attr_total("attack")        # base + alloc
-	var mult := 1.0 + 0.10 * float(atk)        # +10% per Attack
+	var atk := get_attr_total("attack")
+	var mult := 1.0 + 0.10 * float(atk)
 	var new_min := int(ceil(float(base_min) * mult))
 	var new_max := int(ceil(float(base_max) * mult))
 	return Vector2i(new_min, new_max)

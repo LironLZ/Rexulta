@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://bdy7drk4k2qom"]
+[gd_scene load_steps=8 format=3 uid="uid://bdy7drk4k2qom"]
 
 [ext_resource type="Script" uid="uid://dx3rxiyfb34i1" path="res://scripts/character_panel.gd" id="1_nd3ua"]
 [ext_resource type="Texture2D" uid="uid://b8kx18nh45wwf" path="res://art/ui/ingame_gui.png" id="1_o8jqa"]
 [ext_resource type="PackedScene" uid="uid://dn80udkoy2onf" path="res://scenes/ui/AttributeRow.tscn" id="2_0t8iq"]
 [ext_resource type="Texture2D" uid="uid://cpu6eavljjc46" path="res://art/ui/attack_icon.png" id="3_hrwq0"]
+[ext_resource type="Texture2D" uid="uid://d1nx7c8y5gtnu" path="res://art/ui/accuracy_icon.png" id="4_ept7i"]
+[ext_resource type="Texture2D" uid="uid://cesi828j6x7if" path="res://art/ui/defence_icon2.png" id="5_s70l7"]
+[ext_resource type="Texture2D" uid="uid://mflj2fida3o5" path="res://art/ui/intelligence_icon.png" id="6_1uiwd"]
 
 [node name="CharacterPanel" type="Control"]
 layout_mode = 3
@@ -16,6 +19,9 @@ mouse_filter = 2
 script = ExtResource("1_nd3ua")
 attr_row_scene = ExtResource("2_0t8iq")
 attack_icon = ExtResource("3_hrwq0")
+dex_icon = ExtResource("4_ept7i")
+defense_icon = ExtResource("5_s70l7")
+int_icon = ExtResource("6_1uiwd")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -61,6 +67,10 @@ mouse_filter = 2
 [node name="APLabel" type="Label" parent="Margin/Panel/InnerPad/VBox/APHeader"]
 layout_mode = 2
 text = "AP : 0"
+
+[node name="RangeHint" type="Label" parent="Margin/Panel/InnerPad/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="List" type="GridContainer" parent="Margin/Panel/InnerPad/VBox"]
 layout_mode = 2

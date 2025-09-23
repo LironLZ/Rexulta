@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var autorun: bool = true
 @export var gravity_multiplier: float = 1.0
 
-# Damage range (inclusive), rolled EVERY hit
+# Base damage range (inclusive) BEFORE scaling by Attack
 @export var min_damage: int = 1
 @export var max_damage: int = 4
 
@@ -168,11 +168,22 @@ func _end_engage() -> void:
 	_fire_accum = 0.0
 	_attacking = false
 
+# -------- Damage helpers (Attack scaling) --------
+
+func get_current_damage_range() -> Vector2i:
+	# Uses base min/max and scales by Attack (+10% per point), rounded up
+	return State.get_attack_scaled_range(min_damage, max_damage)
+
+func roll_damage() -> int:
+	var r := get_current_damage_range()
+	var dmg := _rng.randi_range(r.x, r.y)
+	# Uncomment for a quick sanity print:
+	# print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
+	return dmg
+
 func _melee_strike(enemy: Node2D) -> void:
 	if enemy.has_method("apply_hit"):
-		var lo = min(min_damage, max_damage)
-		var hi = max(min_damage, max_damage)
-		var dmg := _rng.randi_range(lo, hi) 
+		var dmg := roll_damage()
 		enemy.call("apply_hit", float(dmg))
 	_play_attack()
 
@@ -209,12 +220,3 @@ func _snap_to_ground() -> void:
 	var hit := get_viewport().get_world_2d().direct_space_state.intersect_ray(params)
 	if hit and hit.has("position"):
 		global_position.y = (hit.position as Vector2).y - _bottom_margin_world()
-
-var base_damage := Vector2i(1, 4)
-
-func get_current_damage_range() -> Vector2i:
-	return State.get_attack_scaled_range(base_damage.x, base_damage.y)
-
-func roll_damage() -> int:
-	var r := get_current_damage_range()
-	return randi_range(r.x, r.y)
