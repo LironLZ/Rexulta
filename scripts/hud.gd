@@ -27,6 +27,12 @@ const SHOW_TIME   := 0.18               # seconds for tween
 const HIDDEN_POS  := Vector2(-160, 0)   # offscreen start/end for items (left)
 const TABS_MARGIN := 16                 # px from screen edges
 
+# Hover FX config (applies to QuickTabs buttons)
+const HOVER_SCALE := Vector2(1.06, 1.06)
+const NORMAL_SCALE := Vector2.ONE
+const HOVER_TINT := Color(1.08, 1.08, 1.08, 1.0)
+const NORMAL_TINT := Color(1, 1, 1, 1)
+
 var _tabs_open := false
 var _open_panel: Control = null
 
@@ -94,12 +100,19 @@ func _ready() -> void:
 	else:
 		push_error("HUD: QuickTabs not found at $HUDRoot/QuickTabs")
 
-	# Hook up quick-tab buttons
+	# Hook up quick-tab buttons (press actions)
 	if is_instance_valid(_btn_upgrades): _btn_upgrades.pressed.connect(_on_tab_character) # reuse the old "Upgrades" button
 	if is_instance_valid(_btn_crafting): _btn_crafting.pressed.connect(_on_tab_crafting)
 	if is_instance_valid(_btn_fishing):  _btn_fishing.pressed.connect(_on_tab_fishing)
 	if is_instance_valid(_btn_mining):   _btn_mining.pressed.connect(_on_tab_mining)
 	if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
+
+	# --- Hover FX for all QuickTabs buttons ---
+	_wire_hover_button(_btn_upgrades)
+	_wire_hover_button(_btn_crafting)
+	_wire_hover_button(_btn_fishing)
+	_wire_hover_button(_btn_mining)
+	_wire_hover_button(_btn_settings)
 
 	# Panels config (they live under Root/Panels)
 	if is_instance_valid(_panels_root):
@@ -118,6 +131,45 @@ func _ready() -> void:
 		State.unlocks_changed.connect(_refresh)
 
 	_refresh()
+
+# --- Hover helper (non-invasive; works even if you have a hover sprite) ---
+func _wire_hover_button(b: TextureButton) -> void:
+	if !is_instance_valid(b):
+		return
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_filter = Control.MOUSE_FILTER_STOP
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	# ensure sensible hitbox if layout is tight
+	if b.custom_minimum_size == Vector2.ZERO and b.texture_normal:
+		b.custom_minimum_size = b.texture_normal.get_size()
+
+	# reset to normal state on ready
+	b.scale = NORMAL_SCALE
+	b.modulate = NORMAL_TINT
+
+	# connect once
+	if not b.mouse_entered.is_connected(_on_btn_hover_in.bind(b)):
+		b.mouse_entered.connect(_on_btn_hover_in.bind(b))
+	if not b.mouse_exited.is_connected(_on_btn_hover_out.bind(b)):
+		b.mouse_exited.connect(_on_btn_hover_out.bind(b))
+	# also play nice with keyboard/gamepad focus changes if they ever happen
+	if not b.focus_entered.is_connected(_on_btn_hover_in.bind(b)):
+		b.focus_entered.connect(_on_btn_hover_in.bind(b))
+	if not b.focus_exited.is_connected(_on_btn_hover_out.bind(b)):
+		b.focus_exited.connect(_on_btn_hover_out.bind(b))
+
+func _on_btn_hover_in(b: TextureButton) -> void:
+	if !is_instance_valid(b): return
+	var t := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	t.tween_property(b, "scale", HOVER_SCALE, 0.08)
+	t.parallel().tween_property(b, "modulate", HOVER_TINT, 0.08)
+
+func _on_btn_hover_out(b: TextureButton) -> void:
+	if !is_instance_valid(b): return
+	var t := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	t.tween_property(b, "scale", NORMAL_SCALE, 0.08)
+	t.parallel().tween_property(b, "modulate", NORMAL_TINT, 0.08)
 
 # Place a bottom-right anchored Control with pixel margin and exact hitbox.
 func _place_bottom_right(ctrl: Control, margin_px: int) -> void:
