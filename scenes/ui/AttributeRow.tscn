@@ -15,15 +15,17 @@ offset_right = 122.0
 offset_bottom = 14.5
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 script = ExtResource("1_n4im0")
 
 [node name="Value" type="Label" parent="."]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 text = "0"
+horizontal_alignment = 2
 
 [node name="Icon" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(16, 16)
+custom_minimum_size = Vector2(32, 16)
 layout_mode = 2
 texture = ExtResource("2_ikcol")
 

@@ -59,6 +59,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("3_3dyiy")
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/MenuRoot/UIRoot"]
@@ -79,6 +80,7 @@ alignment = 1
 
 [node name="Play" type="TextureButton" parent="CanvasLayer/MenuRoot/UIRoot/CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 texture_normal = ExtResource("3_owee5")
 texture_pressed = ExtResource("4_if2ld")
 texture_hover = ExtResource("5_7tgft")
