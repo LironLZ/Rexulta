@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var autorun: bool = true
 @export var gravity_multiplier: float = 1.0
 
-# Base damage range (inclusive) BEFORE scaling by Attack
+# Base damage range (inclusive) BEFORE scaling by Attack. Acts as fallback if weapon data is missing.
 @export var min_damage: int = 1
 @export var max_damage: int = 4
 
@@ -24,6 +24,8 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") a
 
 # RNG for per-hit rolls
 var _rng := RandomNumberGenerator.new()
+
+const CRIT_DAMAGE_MULT := 2.0
 
 # combat cadence
 var _fire_accum := 0.0
@@ -170,9 +172,15 @@ func _end_engage() -> void:
 
 # -------- Damage helpers (Attack scaling) --------
 
+func _weapon_base_range() -> Vector2i:
+	var weapon_range := Economy.weapon_melee_range()
+	if weapon_range.x <= 0 or weapon_range.y <= 0:
+		return Vector2i(min_damage, max(min_damage, max_damage))
+	return weapon_range
+
 func get_current_damage_range() -> Vector2i:
-	# Uses base min/max and scales by Attack (+10% per point), rounded up
-	return State.get_attack_scaled_range(min_damage, max_damage)
+	var base_range := _weapon_base_range()
+	return State.get_attack_scaled_range(base_range.x, base_range.y, Economy.weapon_attack_bonus())
 
 func roll_damage() -> int:
 	var r := get_current_damage_range()
@@ -184,8 +192,15 @@ func roll_damage() -> int:
 func _melee_strike(enemy: Node2D) -> void:
 	if enemy.has_method("apply_hit"):
 		var dmg := roll_damage()
-		enemy.call("apply_hit", float(dmg))
+		var is_crit := _roll_is_crit()
+		if is_crit:
+			dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
+		enemy.call("apply_hit", float(dmg), is_crit)
 	_play_attack()
+
+func _roll_is_crit() -> bool:
+	var chance := State.get_crit_chance()
+	return _rng.randf() < chance
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_fullscreen"):
