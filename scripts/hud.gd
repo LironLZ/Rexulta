@@ -16,7 +16,9 @@ extends CanvasLayer
 # NOTE: The scene node is still named BtnCrafting in Main.tscn even though the
 # art/intent is the "Skills" tab. Keeping the path avoids breaking the scene
 # until we rename the node itself.
-@onready var _btn_skills: TextureButton = $HUDRoot/QuickTabs/BtnSkills
+
+@onready var _btn_crafting: TextureButton = $HUDRoot/QuickTabs/BtnCrafting
+
 @onready var _btn_fishing:  TextureButton = $HUDRoot/QuickTabs/BtnFishing
 @onready var _btn_mining:   TextureButton = $HUDRoot/QuickTabs/BtnMining
 @onready var _btn_settings: TextureButton = $HUDRoot/QuickTabs/BtnSettings
@@ -28,6 +30,10 @@ extends CanvasLayer
 # ------- Panels (live in HUD.tscn under Root) -------
 @onready var _panels_root:     Control = $Root/Panels
 @onready var _panel_character: Control = $Root/Panels/CharacterPanel
+@onready var _panel_skills:    Control = $Root/Panels/SkillsPanel
+@onready var _panel_fishing:   Control = $Root/Panels/FishingPanel
+@onready var _panel_mining:    Control = $Root/Panels/MiningPanel
+@onready var _panel_settings:  Control = $Root/Panels/SettingsPanel
 
 
 # Drawer config
@@ -109,11 +115,11 @@ func _ready() -> void:
 		push_error("HUD: QuickTabs not found at $HUDRoot/QuickTabs")
 
 	# Hook up quick-tab buttons (press actions)
-		if is_instance_valid(_btn_upgrades): _btn_upgrades.pressed.connect(_on_tab_character) # reuse the old "Upgrades" button
-		if is_instance_valid(_btn_skills): _btn_skills.pressed.connect(_on_tab_skills)
-		if is_instance_valid(_btn_fishing):  _btn_fishing.pressed.connect(_on_tab_fishing)
-		if is_instance_valid(_btn_mining):   _btn_mining.pressed.connect(_on_tab_mining)
-		if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
+	if is_instance_valid(_btn_upgrades): _btn_upgrades.pressed.connect(_on_tab_character) # reuse the old "Upgrades" button
+	if is_instance_valid(_btn_crafting): _btn_crafting.pressed.connect(_on_tab_skills)
+	if is_instance_valid(_btn_fishing):  _btn_fishing.pressed.connect(_on_tab_fishing)
+	if is_instance_valid(_btn_mining):   _btn_mining.pressed.connect(_on_tab_mining)
+	if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
 
 
 	# --- Hover FX for all QuickTabs buttons ---
@@ -250,23 +256,22 @@ func _hide_all_panels(instant := false) -> void:
 	_panels_root.visible = false
 
 func _show_panel(p: Control) -> void:
-		if !is_instance_valid(p) or !is_instance_valid(_panels_root):
-				return
-		_panels_root.visible = true
-		# hide others
-		for c in _panels_root.get_children():
-				if c is CanvasItem and c != p:
-
-						(c as CanvasItem).visible = false
-						(c as CanvasItem).modulate.a = 0.0
-		# fade in selected
-		p.visible = true
-		var col := p.modulate
-		col.a = 0.0
-		p.modulate = col
-		var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
-		_open_panel = p
+	if !is_instance_valid(p) or !is_instance_valid(_panels_root):
+		return
+	_panels_root.visible = true
+	# hide others
+	for c in _panels_root.get_children():
+		if c is CanvasItem and c != p:
+			(c as CanvasItem).visible = false
+			(c as CanvasItem).modulate.a = 0.0
+	# fade in selected
+	p.visible = true
+	var col := p.modulate
+	col.a = 0.0
+	p.modulate = col
+	var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
+	_open_panel = p
 
 
 func _toggle_panel(p: Control) -> void:
@@ -278,34 +283,34 @@ func _toggle_panel(p: Control) -> void:
 # ------- Quick tab callbacks -------
 
 func _on_tab_character() -> void:
-		if is_instance_valid(_panel_character):
-				_toggle_panel(_panel_character)
-		else:
-				_hide_all_panels()
+	if is_instance_valid(_panel_character):
+		_toggle_panel(_panel_character)
+	else:
+		_hide_all_panels()
 
 func _on_tab_skills() -> void:
-		if is_instance_valid(_panel_skills):
-				_toggle_panel(_panel_skills)
-		else:
-				_hide_all_panels()
+	if is_instance_valid(_panel_skills):
+		_toggle_panel(_panel_skills)
+	else:
+		_hide_all_panels()
 
 func _on_tab_fishing() -> void:
-		if is_instance_valid(_panel_fishing):
-				_toggle_panel(_panel_fishing)
-		else:
-				_hide_all_panels()
+	if is_instance_valid(_panel_fishing):
+		_toggle_panel(_panel_fishing)
+	else:
+		_hide_all_panels()
 
 func _on_tab_mining() -> void:
-		if is_instance_valid(_panel_mining):
-				_toggle_panel(_panel_mining)
-		else:
-				_hide_all_panels()
+	if is_instance_valid(_panel_mining):
+		_toggle_panel(_panel_mining)
+	else:
+		_hide_all_panels()
 
 func _on_tab_settings() -> void:
-		if is_instance_valid(_panel_settings):
-				_toggle_panel(_panel_settings)
-		else:
-				_hide_all_panels()
+	if is_instance_valid(_panel_settings):
+		_toggle_panel(_panel_settings)
+	else:
+		_hide_all_panels()
 
 
 # ------- Existing behavior -------

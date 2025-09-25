@@ -42,10 +42,7 @@ func _ready() -> void:
 
 	State.ability_points_changed.connect(_on_ap_changed)
 	State.level_up.connect(_on_level_up)
-	State.attribute_changed.connect(func(key: String, _v: int):
-		if key == "attack":
-			_refresh_range_hint()
-	)
+	State.attribute_changed.connect(_on_attribute_changed)
 
 func _build_rows() -> void:
 	for c in list.get_children():
@@ -87,15 +84,18 @@ func _on_level_up(_n: int) -> void:
 func _refresh_range_hint() -> void:
 	if not is_instance_valid(range_hint):
 		return
-	var dm := _compute_scaled_damage(base_min_damage, base_max_damage)
-	range_hint.text = "Damage: %d–%d" % [dm.x, dm.y]
+		var base_range := Economy.weapon_melee_range()
+		var base_min := base_range.x if base_range.x > 0 else base_min_damage
+		var base_max := base_range.y if base_range.y > 0 else base_max_damage
+		if base_max < base_min:
+			base_max = base_min
+		var dm := State.get_attack_scaled_range(base_min, base_max, Economy.weapon_attack_bonus())
+		var crit := State.get_crit_chance() * 100.0
+		range_hint.text = "Damage: %d–%d  (Crit %.1f%%)" % [dm.x, dm.y, crit]
 
-func _compute_scaled_damage(min_base: int, max_base: int) -> Vector2i:
-	var atk_total := State.get_attr_total("attack")
-	var mult := 1.0 + 0.10 * float(atk_total)
-	var new_min := int(ceil(float(min_base) * mult))
-	var new_max := int(ceil(float(max_base) * mult))
-	return Vector2i(new_min, new_max)
+func _on_attribute_changed(key: String, _v: int) -> void:
+		if key == "attack" or key == "dex":
+			_refresh_range_hint()
 
 # (Optional debug)
 func _gui_input(e: InputEvent) -> void:
