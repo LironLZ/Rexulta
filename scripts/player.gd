@@ -179,13 +179,14 @@ func get_current_damage_range() -> Vector2i:
 	return State.get_attack_scaled_range(min_damage, max_damage)
 
 func roll_damage() -> int:
-	var r := get_current_damage_range()
-	var dmg := _rng.randi_range(r.x, r.y)
-	# Uncomment for a quick sanity print:
-	# print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
-	return dmg
+        var r := get_current_damage_range()
+        var dmg := _rng.randi_range(r.x, r.y)
+        # Uncomment for a quick sanity print:
+        # print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
+        return dmg
 
 func _melee_strike(enemy: Node2D) -> void:
+
 	if enemy.has_method("apply_hit"):
 		var dmg := roll_damage()
 		var is_crit := _roll_is_crit()
@@ -193,6 +194,7 @@ func _melee_strike(enemy: Node2D) -> void:
 			dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
 		enemy.call("apply_hit", float(dmg), is_crit)
 	_play_attack()
+
 
 func _roll_is_crit() -> bool:
 	var accuracy_points := float(State.get_attr_total("dex"))
