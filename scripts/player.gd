@@ -202,6 +202,7 @@ func _roll_is_crit() -> bool:
 		var chance := clampf(BASE_CRIT_CHANCE + (CRIT_PER_ACCURACY * accuracy_points), 0.0, 0.999)
 		return _rng.randf() < chance
 
+
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_fullscreen"):
 		Display.toggle_fullscreen()

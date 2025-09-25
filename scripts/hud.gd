@@ -115,6 +115,7 @@ func _ready() -> void:
 		if is_instance_valid(_btn_mining):   _btn_mining.pressed.connect(_on_tab_mining)
 		if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
 
+
 	# --- Hover FX for all QuickTabs buttons ---
 	_wire_all_tab_hovers()
 
@@ -267,6 +268,7 @@ func _show_panel(p: Control) -> void:
 		tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
 		_open_panel = p
 
+
 func _toggle_panel(p: Control) -> void:
 	if _open_panel == p and is_instance_valid(p) and p.visible:
 		_hide_all_panels()
@@ -304,6 +306,7 @@ func _on_tab_settings() -> void:
 				_toggle_panel(_panel_settings)
 		else:
 				_hide_all_panels()
+
 
 # ------- Existing behavior -------
 
