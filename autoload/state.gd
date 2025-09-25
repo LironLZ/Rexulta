@@ -330,10 +330,34 @@ func _backfill_points_from_level() -> void:
 		ability_points = expected
 		ability_points_changed.emit(ability_points)
 
+# ===== Damage scaling helpers =====
+
+const CRIT_PER_DEX := 0.001  # +0.1% per DEX
+const BASE_CRIT := 0.0
+const CRIT_CAP := 0.75       # prevent always-on crits (75% cap; tweak if you like)
+
+func get_crit_rate() -> float:
+	# returns 0..1 (capped so it never becomes 100%)
+	return clamp(BASE_CRIT + float(get_attr_total("dex")) * CRIT_PER_DEX, 0.0, CRIT_CAP)
+
 # +10% damage per Attack (rounded up)
+# DEX effect: each point adds +1 to the *base min damage* before ATK scaling.
 func get_attack_scaled_range(base_min: int, base_max: int) -> Vector2i:
 	var atk := get_attr_total("attack")
+	var dex := get_attr_total("dex")
 	var mult := 1.0 + 0.10 * float(atk)
-	var new_min := int(ceil(float(base_min) * mult))
-	var new_max := int(ceil(float(base_max) * mult))
-	return Vector2i(new_min, new_max)
+
+	# Apply DEX to base min; preserve pre-scale spread
+	var min0 := base_min + dex
+	var max0 := base_max
+	if max0 <= min0:
+		max0 = min0 + 2  # ensure a small spread before scaling
+
+	var scaled_min := int(ceil(float(min0) * mult))
+	var scaled_max := int(ceil(float(max0) * mult))
+
+	# Guarantee a spread after scaling as well
+	if scaled_max <= scaled_min:
+		scaled_max = scaled_min + 1
+
+	return Vector2i(scaled_min, scaled_max)

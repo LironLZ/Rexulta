@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var autorun: bool = true
 @export var gravity_multiplier: float = 1.0
 
-# Base damage range (inclusive) BEFORE scaling by Attack
+# Base damage range (inclusive) BEFORE scaling by Attack/DEX
 @export var min_damage: int = 1
 @export var max_damage: int = 4
 
@@ -40,11 +40,13 @@ var _target: Node2D = null
 # animation state
 var _attacking := false   # true while 'attack' is playing once
 
+# ---- Crit tuning ----
+const CRIT_MULT := 2.5  # 2.5x crits, rounded up
+
 func _ready() -> void:
 	floor_snap_length = 6.0
 	_snap_to_ground()
 
-	# Seed once so each run/session gets its own random stream
 	_rng.randomize()
 
 	if is_instance_valid(anim) and anim.sprite_frames:
@@ -172,32 +174,33 @@ func _end_engage() -> void:
 	_fire_accum = 0.0
 	_attacking = false
 
-# -------- Damage helpers (Attack scaling) --------
+# -------- Damage helpers (Attack + DEX + Crit) --------
 
 func get_current_damage_range() -> Vector2i:
-	# Uses base min/max and scales by Attack (+10% per point), rounded up
+	# Uses base min/max and scales by Attack; DEX bumps min inside State helper
 	return State.get_attack_scaled_range(min_damage, max_damage)
 
 func roll_damage() -> int:
-        var r := get_current_damage_range()
-        var dmg := _rng.randi_range(r.x, r.y)
-        # Uncomment for a quick sanity print:
-        # print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
-        return dmg
+		var r := get_current_damage_range()
+		var dmg := _rng.randi_range(r.x, r.y)
+		# Uncomment for a quick sanity print:
+		# print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
+		return dmg
+
 
 func _melee_strike(enemy: Node2D) -> void:
-        if enemy.has_method("apply_hit"):
-                var dmg := roll_damage()
-                var is_crit := _roll_is_crit()
-                if is_crit:
-                        dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
-                enemy.call("apply_hit", float(dmg), is_crit)
-        _play_attack()
+		if enemy.has_method("apply_hit"):
+				var dmg := roll_damage()
+				var is_crit := _roll_is_crit()
+				if is_crit:
+						dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
+				enemy.call("apply_hit", float(dmg), is_crit)
+		_play_attack()
 
 func _roll_is_crit() -> bool:
-        var accuracy_points := float(State.get_attr_total("dex"))
-        var chance := clampf(BASE_CRIT_CHANCE + (CRIT_PER_ACCURACY * accuracy_points), 0.0, 0.999)
-        return _rng.randf() < chance
+		var accuracy_points := float(State.get_attr_total("dex"))
+		var chance := clampf(BASE_CRIT_CHANCE + (CRIT_PER_ACCURACY * accuracy_points), 0.0, 0.999)
+		return _rng.randf() < chance
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_fullscreen"):
