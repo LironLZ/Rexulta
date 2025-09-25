@@ -334,6 +334,7 @@ func _backfill_points_from_level() -> void:
 		ability_points = expected
 		ability_points_changed.emit(ability_points)
 
+
 # +10% damage per Attack (rounded up). Optional weapon bonus folds in here
 func get_attack_scaled_range(base_min: int, base_max: int, attack_bonus: int = 0) -> Vector2i:
 	var atk := max(0, get_attr_total("attack") + attack_bonus)
@@ -347,3 +348,4 @@ func get_attack_scaled_range(base_min: int, base_max: int, attack_bonus: int = 0
 func get_crit_chance(extra_accuracy: float = 0.0) -> float:
 	var dex_total := float(get_attr_total("dex")) + max(0.0, extra_accuracy)
 	return clampf(BASE_CRIT_CHANCE + CRIT_PER_DEX * dex_total, 0.0, 0.999)
+

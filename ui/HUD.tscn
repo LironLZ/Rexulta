@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://ctr7remluxy4i"]
+[gd_scene load_steps=7 format=3 uid="uid://ctr7remluxy4i"]
 
 [ext_resource type="Script" uid="uid://b0m6np48d43l8" path="res://scripts/hud.gd" id="1_1x8ju"]
 [ext_resource type="PackedScene" uid="uid://bdy7drk4k2qom" path="res://scenes/ui/CharacterPanel.tscn" id="2_aaqae"]
+[ext_resource type="PackedScene" uid="uid://lroy477ndfmx" path="res://scenes/ui/SkillsPanel.tscn" id="3_pfnlp"]
+[ext_resource type="PackedScene" uid="uid://bmrvepafvx2uh" path="res://scenes/ui/FishingPanel.tscn" id="4_3q2by"]
+[ext_resource type="PackedScene" uid="uid://dvb48v46ejb38" path="res://scenes/ui/MiningPanel.tscn" id="5_tvtyy"]
+[ext_resource type="PackedScene" uid="uid://c2yumy4qjd1co" path="res://scenes/ui/SettingsPanel.tscn" id="6_li43i"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_1x8ju")
@@ -74,4 +78,16 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CharacterPanel" parent="Root/Panels" instance=ExtResource("2_aaqae")]
+layout_mode = 1
+
+[node name="SkillsPanel" parent="Root/Panels" instance=ExtResource("3_pfnlp")]
+layout_mode = 1
+
+[node name="FishingPanel" parent="Root/Panels" instance=ExtResource("4_3q2by")]
+layout_mode = 1
+
+[node name="MiningPanel" parent="Root/Panels" instance=ExtResource("5_tvtyy")]
+layout_mode = 1
+
+[node name="SettingsPanel" parent="Root/Panels" instance=ExtResource("6_li43i")]
 layout_mode = 1
