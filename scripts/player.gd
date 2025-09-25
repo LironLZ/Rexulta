@@ -186,18 +186,20 @@ func roll_damage() -> int:
         return dmg
 
 func _melee_strike(enemy: Node2D) -> void:
-        if enemy.has_method("apply_hit"):
-                var dmg := roll_damage()
-                var is_crit := _roll_is_crit()
-                if is_crit:
-                        dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
-                enemy.call("apply_hit", float(dmg), is_crit)
-        _play_attack()
+
+	if enemy.has_method("apply_hit"):
+		var dmg := roll_damage()
+		var is_crit := _roll_is_crit()
+		if is_crit:
+			dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
+		enemy.call("apply_hit", float(dmg), is_crit)
+	_play_attack()
+
 
 func _roll_is_crit() -> bool:
-        var accuracy_points := float(State.get_attr_total("dex"))
-        var chance := clampf(BASE_CRIT_CHANCE + (CRIT_PER_ACCURACY * accuracy_points), 0.0, 0.999)
-        return _rng.randf() < chance
+	var accuracy_points := float(State.get_attr_total("dex"))
+	var chance := clampf(BASE_CRIT_CHANCE + (CRIT_PER_ACCURACY * accuracy_points), 0.0, 0.999)
+	return _rng.randf() < chance
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_fullscreen"):
