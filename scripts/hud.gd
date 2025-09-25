@@ -17,9 +17,14 @@ extends CanvasLayer
 # art/intent is the "Skills" tab. Keeping the path avoids breaking the scene
 # until we rename the node itself.
 @onready var _btn_crafting: TextureButton = $HUDRoot/QuickTabs/BtnCrafting
+
 @onready var _btn_fishing:  TextureButton = $HUDRoot/QuickTabs/BtnFishing
 @onready var _btn_mining:   TextureButton = $HUDRoot/QuickTabs/BtnMining
 @onready var _btn_settings: TextureButton = $HUDRoot/QuickTabs/BtnSettings
+@onready var _panel_skills:   Control = $Root/Panels/SkillsPanel
+@onready var _panel_fishing:  Control = $Root/Panels/FishingPanel
+@onready var _panel_mining:   Control = $Root/Panels/MiningPanel
+@onready var _panel_settings: Control = $Root/Panels/SettingsPanel
 
 # ------- Panels (live in HUD.tscn under Root) -------
 @onready var _panels_root:     Control = $Root/Panels
@@ -28,6 +33,8 @@ extends CanvasLayer
 @onready var _panel_fishing:   Control = $Root/Panels/FishingPanel
 @onready var _panel_mining:    Control = $Root/Panels/MiningPanel
 @onready var _panel_settings:  Control = $Root/Panels/SettingsPanel
+
+
 
 # Drawer config
 const SHOW_TIME   := 0.18               # seconds for tween
@@ -110,9 +117,11 @@ func _ready() -> void:
 	# Hook up quick-tab buttons (press actions)
 	if is_instance_valid(_btn_upgrades): _btn_upgrades.pressed.connect(_on_tab_character) # reuse the old "Upgrades" button
 	if is_instance_valid(_btn_crafting): _btn_crafting.pressed.connect(_on_tab_skills)
+
 	if is_instance_valid(_btn_fishing):  _btn_fishing.pressed.connect(_on_tab_fishing)
 	if is_instance_valid(_btn_mining):   _btn_mining.pressed.connect(_on_tab_mining)
 	if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
+
 
 	# --- Hover FX for all QuickTabs buttons ---
 	_wire_all_tab_hovers()
@@ -265,6 +274,7 @@ func _show_panel(p: Control) -> void:
 	tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
 	_open_panel = p
 
+
 func _toggle_panel(p: Control) -> void:
 	if _open_panel == p and is_instance_valid(p) and p.visible:
 		_hide_all_panels()
@@ -302,6 +312,7 @@ func _on_tab_settings() -> void:
 		_toggle_panel(_panel_settings)
 	else:
 		_hide_all_panels()
+
 
 # ------- Existing behavior -------
 

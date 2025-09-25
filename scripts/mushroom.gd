@@ -25,6 +25,7 @@ func apply_hit(dmg: float, _is_crit: bool = false) -> void:
         if hp <= 0.0:
                 _die()
 
+
 func _hit_flash() -> void:
 	# quick white flash on the visible sprite node
 	var node := get_node_or_null("Sprite") as CanvasItem
