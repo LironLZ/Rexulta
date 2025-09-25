@@ -28,10 +28,7 @@ extends CanvasLayer
 # ------- Panels (live in HUD.tscn under Root) -------
 @onready var _panels_root:     Control = $Root/Panels
 @onready var _panel_character: Control = $Root/Panels/CharacterPanel
-@onready var _panel_skills:    Control = $Root/Panels/SkillsPanel
-@onready var _panel_fishing:   Control = $Root/Panels/FishingPanel
-@onready var _panel_mining:    Control = $Root/Panels/MiningPanel
-@onready var _panel_settings:  Control = $Root/Panels/SettingsPanel
+
 
 # Drawer config
 const SHOW_TIME   := 0.18               # seconds for tween
@@ -258,6 +255,7 @@ func _show_panel(p: Control) -> void:
 		# hide others
 		for c in _panels_root.get_children():
 				if c is CanvasItem and c != p:
+
 						(c as CanvasItem).visible = false
 						(c as CanvasItem).modulate.a = 0.0
 		# fade in selected
