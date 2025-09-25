@@ -28,7 +28,6 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") a
 var _rng := RandomNumberGenerator.new()
 
 
-
 const CRIT_DAMAGE_MULT := 2.0
 
 # combat cadence
@@ -177,6 +176,12 @@ func _end_engage() -> void:
 	_attacking = false
 
 # -------- Damage helpers (Attack + DEX + Crit) --------
+
+func _weapon_base_range() -> Vector2i:
+	var weapon_range := Economy.weapon_melee_range()
+	if weapon_range.x <= 0 or weapon_range.y <= 0:
+		return Vector2i(min_damage, max(min_damage, max_damage))
+	return weapon_range
 
 func _weapon_base_range() -> Vector2i:
 	var weapon_range := Economy.weapon_melee_range()
