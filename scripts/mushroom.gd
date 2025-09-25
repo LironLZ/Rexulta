@@ -19,11 +19,11 @@ func _physics_process(delta: float) -> void:
 		velocity.x = -move_speed
 		move_and_slide()
 
-func apply_hit(dmg: float) -> void:
-	hp -= max(0.0, dmg)
-	_hit_flash()
-	if hp <= 0.0:
-		_die()
+func apply_hit(dmg: float, _is_crit: bool = false) -> void:
+        hp -= max(0.0, dmg)
+        _hit_flash()
+        if hp <= 0.0:
+                _die()
 
 func _hit_flash() -> void:
 	# quick white flash on the visible sprite node

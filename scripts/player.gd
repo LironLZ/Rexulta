@@ -25,6 +25,10 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity") a
 # RNG for per-hit rolls
 var _rng := RandomNumberGenerator.new()
 
+const BASE_CRIT_CHANCE := 0.05
+const CRIT_PER_ACCURACY := 0.001
+const CRIT_DAMAGE_MULT := 2.0
+
 # combat cadence
 var _fire_accum := 0.0
 
@@ -175,17 +179,25 @@ func get_current_damage_range() -> Vector2i:
 	return State.get_attack_scaled_range(min_damage, max_damage)
 
 func roll_damage() -> int:
-	var r := get_current_damage_range()
-	var dmg := _rng.randi_range(r.x, r.y)
-	# Uncomment for a quick sanity print:
-	# print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
-	return dmg
+        var r := get_current_damage_range()
+        var dmg := _rng.randi_range(r.x, r.y)
+        # Uncomment for a quick sanity print:
+        # print("[DMG] atk=", State.get_attr_total("attack"), " range=", r, " roll=", dmg)
+        return dmg
 
 func _melee_strike(enemy: Node2D) -> void:
-	if enemy.has_method("apply_hit"):
-		var dmg := roll_damage()
-		enemy.call("apply_hit", float(dmg))
-	_play_attack()
+        if enemy.has_method("apply_hit"):
+                var dmg := roll_damage()
+                var is_crit := _roll_is_crit()
+                if is_crit:
+                        dmg = max(1, int(round(float(dmg) * CRIT_DAMAGE_MULT)))
+                enemy.call("apply_hit", float(dmg), is_crit)
+        _play_attack()
+
+func _roll_is_crit() -> bool:
+        var accuracy_points := float(State.get_attr_total("dex"))
+        var chance := clampf(BASE_CRIT_CHANCE + (CRIT_PER_ACCURACY * accuracy_points), 0.0, 0.999)
+        return _rng.randf() < chance
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_fullscreen"):

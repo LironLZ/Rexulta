@@ -115,11 +115,7 @@ func _ready() -> void:
         if is_instance_valid(_btn_settings): _btn_settings.pressed.connect(_on_tab_settings)
 
 	# --- Hover FX for all QuickTabs buttons ---
-	_wire_hover_button(_btn_upgrades)
-	_wire_hover_button(_btn_crafting)
-	_wire_hover_button(_btn_fishing)
-	_wire_hover_button(_btn_mining)
-	_wire_hover_button(_btn_settings)
+	_wire_all_tab_hovers()
 
 	# Panels config (they live under Root/Panels)
 	if is_instance_valid(_panels_root):
@@ -165,6 +161,14 @@ func _wire_hover_button(b: TextureButton) -> void:
 		b.focus_entered.connect(_on_btn_hover_in.bind(b))
 	if not b.focus_exited.is_connected(_on_btn_hover_out.bind(b)):
 		b.focus_exited.connect(_on_btn_hover_out.bind(b))
+
+func _wire_all_tab_hovers() -> void:
+	if !is_instance_valid(_tabs_root):
+		return
+	# Catch any existing or future TextureButtons dropped into the quick-tab row.
+	for child in _tabs_root.get_children():
+		if child is TextureButton:
+			_wire_hover_button(child)
 
 func _on_btn_hover_in(b: TextureButton) -> void:
 	if !is_instance_valid(b): return
