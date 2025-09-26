@@ -15,6 +15,10 @@ run/main_scene="uid://dmlcgcphchq22"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
+[audio]
+
+bus_layout="res://audio/default_bus_layout.tres"
+
 [autoload]
 
 State="*res://autoload/state.gd"
@@ -45,6 +49,3 @@ uicancel={
 textures/canvas_textures/default_texture_filter=0
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
-
-[audio]
-bus_layout="res://audio/default_bus_layout.tres"
