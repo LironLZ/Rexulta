@@ -25,6 +25,7 @@ func apply_hit(dmg: float, is_crit: bool = false) -> void:
         if hp <= 0.0:
                 _die()
 
+
 func _spawn_damage_text(amount: float, is_crit: bool = false) -> void:
 	var ft := FT_SCENE.instantiate()
 	ft.position = global_position + Vector2(0, -12)

@@ -26,6 +26,7 @@ extends CanvasLayer
 @onready var _panel_mining:    Control = $Root/Panels/MiningPanel
 @onready var _panel_settings:  Control = $Root/Panels/SettingsPanel
 
+
 # Drawer config
 const SHOW_TIME   := 0.18               # seconds for tween
 const HIDDEN_POS  := Vector2(-160, 0)   # offscreen start/end for items (left)
@@ -115,6 +116,7 @@ func _ready() -> void:
 		_btn_mining.pressed.connect(_on_tab_mining)
 	if is_instance_valid(_btn_settings):
 		_btn_settings.pressed.connect(_on_tab_settings)
+
 
 	# --- Hover FX for all QuickTabs buttons ---
 	_wire_all_tab_hovers()
@@ -267,6 +269,7 @@ func _show_panel(p: Control) -> void:
 	tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
 	_open_panel = p
 
+
 func _toggle_panel(p: Control) -> void:
 	if _open_panel == p and is_instance_valid(p) and p.visible:
 		_hide_all_panels()
@@ -284,6 +287,7 @@ func _toggle_or_hide(panel: Control) -> void:
 func _on_tab_character() -> void:
 	_toggle_or_hide(_panel_character)
 
+
 func _on_tab_skills() -> void:
 	_toggle_or_hide(_panel_skills)
 
@@ -295,6 +299,7 @@ func _on_tab_mining() -> void:
 
 func _on_tab_settings() -> void:
 	_toggle_or_hide(_panel_settings)
+
 
 # ------- Existing behavior -------
 
@@ -322,6 +327,19 @@ func _refresh() -> void:
 		mine_b.visible   = true
 	if is_instance_valid(ascend_b):
 		ascend_b.visible = true
+
+	if is_instance_valid(_btn_fishing):
+		_btn_fishing.visible = State.fishing_unlocked
+		if !_btn_fishing.visible and _open_panel == _panel_fishing:
+			_hide_all_panels()
+	if is_instance_valid(_btn_mining):
+		_btn_mining.visible = State.mining_unlocked
+		if !_btn_mining.visible and _open_panel == _panel_mining:
+			_hide_all_panels()
+	if is_instance_valid(_btn_prestige):
+		_btn_prestige.visible = State.ascend_unlocked
+		if !_btn_prestige.visible and _open_panel == _panel_prestige:
+			_hide_all_panels()
 
 	var m := State.mode
 	if is_instance_valid(arena_b):
