@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://054b2ce1a5714b6fa13733"]
 
-
 [node name="UpgradesPanel" type="Control"]
 layout_mode = 3
 anchors_preset = 15

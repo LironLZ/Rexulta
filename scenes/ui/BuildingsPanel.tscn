@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://d96ece5521b74ce6b82b2c"]
 
-
 [node name="BuildingsPanel" type="Control"]
 layout_mode = 3
 anchors_preset = 15

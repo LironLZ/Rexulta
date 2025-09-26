@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://aa793f9fc611473587a368"]
 
-
 [node name="PrestigePanel" type="Control"]
 layout_mode = 3
 anchors_preset = 15

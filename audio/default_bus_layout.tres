@@ -1,0 +1,43 @@
+[gd_resource type="AudioBusLayout" load_steps=1 format=3 uid="uid://bkb0mclm2p2ik"]
+
+[buses]
+
+[buses/0]
+bus/name = "Master"
+bus/volume_db = 0.0
+bus/mute = false
+bus/solo = false
+bus/bypass_fx = false
+bus/send = ""
+
+bus/effects = []
+
+[buses/1]
+bus/name = "Music"
+bus/volume_db = 0.0
+bus/mute = false
+bus/solo = false
+bus/bypass_fx = false
+bus/send = "Master"
+
+bus/effects = []
+
+[buses/2]
+bus/name = "SFX"
+bus/volume_db = 0.0
+bus/mute = false
+bus/solo = false
+bus/bypass_fx = false
+bus/send = "Master"
+
+bus/effects = []
+
+[buses/3]
+bus/name = "Ambience"
+bus/volume_db = 0.0
+bus/mute = false
+bus/solo = false
+bus/bypass_fx = false
+bus/send = "Master"
+
+bus/effects = []

@@ -19,12 +19,11 @@ func _ready() -> void:
 
 
 func apply_hit(dmg: float, is_crit: bool = false) -> void:
-		hp -= dmg
-		_spawn_damage_text(dmg, is_crit)
-		_flash_hurt()
-		if hp <= 0.0:
-				_die()
-
+        hp -= dmg
+        _spawn_damage_text(dmg, is_crit)
+        _flash_hurt()
+        if hp <= 0.0:
+                _die()
 
 func _spawn_damage_text(amount: float, is_crit: bool = false) -> void:
 	var ft := FT_SCENE.instantiate()

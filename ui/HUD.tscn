@@ -1,16 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://ctr7remluxy4i"]
+[gd_scene load_steps=10 format=3 uid="uid://ctr7remluxy4i"]
 
 [ext_resource type="Script" uid="uid://b0m6np48d43l8" path="res://scripts/hud.gd" id="1_1x8ju"]
 [ext_resource type="PackedScene" uid="uid://bdy7drk4k2qom" path="res://scenes/ui/CharacterPanel.tscn" id="2_aaqae"]
-[ext_resource type="PackedScene" uid="uid://n3glvyq4qmkq" path="res://scenes/ui/BuildingsPanel.tscn" id="3_4uzh4"]
-[ext_resource type="PackedScene" uid="uid://7jj3bmdicnsm" path="res://scenes/ui/UpgradesPanel.tscn" id="4_q42mw"]
-[ext_resource type="PackedScene" uid="uid://dsfkyiub02j7b" path="res://scenes/ui/SkillsPanel.tscn" id="5_y3v6j"]
-[ext_resource type="PackedScene" uid="uid://7yn1m6cokjpn" path="res://scenes/ui/FishingPanel.tscn" id="6_0bx2u"]
-[ext_resource type="PackedScene" uid="uid://bkak7lbmhos2m" path="res://scenes/ui/MiningPanel.tscn" id="7_2yn0h"]
-[ext_resource type="PackedScene" uid="uid://cd0rq0cjlg8j0" path="res://scenes/ui/PrestigePanel.tscn" id="8_92fp4"]
-[ext_resource type="PackedScene" uid="uid://doapx8iuiagkx" path="res://scenes/ui/AchievementsPanel.tscn" id="9_7g3tq"]
-[ext_resource type="PackedScene" uid="uid://b4dfbq47oo0ug" path="res://scenes/ui/SettingsPanel.tscn" id="10_r5s0p"]
-[ext_resource type="Texture2D" uid="uid://71eprqhthme4" path="res://art/ui/settings_menu.png" id="11_37bek"]
+[ext_resource type="PackedScene" uid="uid://d96ece5521b74ce6b82b2c" path="res://scenes/ui/BuildingsPanel.tscn" id="3_4uzh4"]
+[ext_resource type="PackedScene" uid="uid://054b2ce1a5714b6fa13733" path="res://scenes/ui/UpgradesPanel.tscn" id="4_q42mw"]
+[ext_resource type="PackedScene" uid="uid://9a3f7401ff70419384e90d" path="res://scenes/ui/SkillsPanel.tscn" id="5_y3v6j"]
+[ext_resource type="PackedScene" uid="uid://b79cf643eb444a20a1d0ad" path="res://scenes/ui/FishingPanel.tscn" id="6_0bx2u"]
+[ext_resource type="PackedScene" uid="uid://ebd824317b7d41bb92a4da" path="res://scenes/ui/MiningPanel.tscn" id="7_2yn0h"]
+[ext_resource type="PackedScene" uid="uid://aa793f9fc611473587a368" path="res://scenes/ui/PrestigePanel.tscn" id="8_92fp4"]
+[ext_resource type="PackedScene" uid="uid://b7d6c684a5014b109c6b8f" path="res://scenes/ui/AchievementsPanel.tscn" id="9_7g3tq"]
+[ext_resource type="PackedScene" uid="uid://f9a993b4c2ee4c76a121ac" path="res://scenes/ui/SettingsPanel.tscn" id="10_r5s0p"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_1x8ju")
@@ -24,42 +23,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="TopBar" type="HBoxContainer" parent="Root"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
-
-[node name="ArenaBtn" type="Button" parent="Root/TopBar"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-text = "Arena"
-
-[node name="FishingBtn" type="Button" parent="Root/TopBar"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-text = "Fishing"
-
-[node name="MiningBtn" type="Button" parent="Root/TopBar"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-text = "Mining"
-
-[node name="AscendBtn" type="Button" parent="Root/TopBar"]
-layout_mode = 2
-mouse_filter = 2
-text = "Ascend"
-
 [node name="StatsBox" type="VBoxContainer" parent="Root"]
 layout_mode = 1
-offset_top = 32.0
+offset_top = 16.0
 offset_right = 40.0
 offset_bottom = 109.0
 
@@ -109,22 +75,3 @@ layout_mode = 1
 [node name="SettingsPanel" parent="Root/Panels" instance=ExtResource("10_r5s0p")]
 layout_mode = 1
 
-[node name="SettingsPanel" parent="Root/Panels/SettingsPanel" instance=ExtResource("10_r5s0p")]
-layout_mode = 1
-
-[node name="NinePatchRect" type="NinePatchRect" parent="Root/Panels/SettingsPanel/SettingsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 150.0
-offset_top = 70.0
-offset_right = -170.0
-offset_bottom = -90.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("11_37bek")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8

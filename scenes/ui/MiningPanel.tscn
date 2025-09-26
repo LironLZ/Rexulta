@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://ebd824317b7d41bb92a4da"]
 
-
 [node name="MiningPanel" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -23,4 +22,3 @@ offset_bottom = 20.0
 horizontal_alignment = 1
 vertical_alignment = 1
 text = "Mining coming soon"
-
