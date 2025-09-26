@@ -18,3 +18,14 @@ func toggle_fullscreen() -> void:
 		_prev_size = DisplayServer.window_get_size()
 		_prev_pos  = DisplayServer.window_get_position()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+func set_window_size(new_size: Vector2i) -> void:
+	if new_size.x <= 0 or new_size.y <= 0:
+		return
+	var was_fullscreen := is_fullscreen()
+	if was_fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_size(new_size)
+	_prev_size = new_size
+	if !was_fullscreen:
+		_prev_pos = DisplayServer.window_get_position()

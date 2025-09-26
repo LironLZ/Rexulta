@@ -4,7 +4,7 @@ extends Node
 var gold := 0.0
 var xp := 0.0
 var level := 1
-var chosen_weapon := ""   # "bow" | "wand" (for now)
+var chosen_weapon := ""   # weapon id (see Economy.weapons)
 var chosen_class := ""    # set at Lv10 each run
 var fish := 0
 var ore := 0
@@ -49,6 +49,10 @@ var attributes := {
 	"defense": {"name":"Defence",      "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Reduces damage taken."},
 	"magic":   {"name":"Intelligence", "base": 0, "alloc": 0, "max_alloc": 200, "desc": "Boosts magic power."},
 }
+
+const ATTACK_DAMAGE_PER_POINT := 0.10
+const BASE_CRIT_CHANCE := 0.05
+const CRIT_PER_DEX := 0.001
 
 func get_attr_total(key: String) -> int:
 	var a = attributes.get(key)
@@ -244,6 +248,43 @@ func _maybe_gain_sigil():
 		sigils = target
 
 # ================= Save / Load / Offline =================
+func reset_save() -> void:
+	gold = 0.0
+	xp = 0.0
+	level = 1
+	chosen_weapon = ""
+	chosen_class = ""
+	fish = 0
+	ore = 0
+	mode = "arena"
+	fishing_unlocked = false
+	mining_unlocked = false
+	ascend_unlocked = false
+	lifetime_xp = 0.0
+	run_xp = 0.0
+	sigils = 0
+	for k in class_marks.keys():
+		class_marks[k] = 0
+	for k in class_mastery.keys():
+		class_mastery[k].dmg_mult = 1.0
+	ability_points = 0
+	skill_points = 0
+	for key in attributes.keys():
+		attributes[key].alloc = 0
+	for id in skills.keys():
+		skills[id].rank = 0
+	last_save_unix = 0
+	player_class = "Warrior"
+	emit_signal("unlocks_changed")
+	ability_points_changed.emit(ability_points)
+	skill_points_changed.emit(skill_points)
+	for key in attributes.keys():
+		attribute_changed.emit(key, get_attr_total(key))
+	for id in skills.keys():
+		skill_changed.emit(id, skills[id].rank)
+	mode_changed.emit(mode)
+	save()
+
 func save():
 	var data = {
 		"gold": gold, "xp": xp, "level": level,
@@ -330,10 +371,16 @@ func _backfill_points_from_level() -> void:
 		ability_points = expected
 		ability_points_changed.emit(ability_points)
 
-# +10% damage per Attack (rounded up)
-func get_attack_scaled_range(base_min: int, base_max: int) -> Vector2i:
-	var atk := get_attr_total("attack")
-	var mult := 1.0 + 0.10 * float(atk)
-	var new_min := int(ceil(float(base_min) * mult))
-	var new_max := int(ceil(float(base_max) * mult))
+# +10% damage per Attack (rounded up). Optional weapon bonus folds in here
+func get_attack_scaled_range(base_min: int, base_max: int, attack_bonus: int = 0) -> Vector2i:
+	var atk := max(0, get_attr_total("attack") + attack_bonus)
+	var mult := 1.0 + ATTACK_DAMAGE_PER_POINT * float(atk)
+	var safe_min := max(0, base_min)
+	var safe_max := max(safe_min, base_max)
+	var new_min := int(ceil(float(safe_min) * mult))
+	var new_max := int(ceil(float(safe_max) * mult))
 	return Vector2i(new_min, new_max)
+
+func get_crit_chance(extra_accuracy: float = 0.0) -> float:
+	var dex_total := float(get_attr_total("dex")) + max(0.0, extra_accuracy)
+	return clampf(BASE_CRIT_CHANCE + CRIT_PER_DEX * dex_total, 0.0, 0.999)
