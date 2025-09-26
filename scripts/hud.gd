@@ -22,6 +22,8 @@ extends CanvasLayer
 @onready var _btn_achievements: TextureButton = $HUDRoot/QuickTabs/BtnAchievements
 @onready var _btn_settings:     TextureButton = $HUDRoot/QuickTabs/BtnSettings
 
+
+
 # ------- Panels (live in HUD.tscn under Root) -------
 @onready var _panels_root:        Control = $Root/Panels
 @onready var _panel_character:    Control = $Root/Panels/CharacterPanel
@@ -33,6 +35,7 @@ extends CanvasLayer
 @onready var _panel_prestige:     Control = $Root/Panels/PrestigePanel
 @onready var _panel_achievements: Control = $Root/Panels/AchievementsPanel
 @onready var _panel_settings:     Control = $Root/Panels/SettingsPanel
+
 
 # Drawer config
 const SHOW_TIME   := 0.18               # seconds for tween
@@ -131,6 +134,8 @@ func _ready() -> void:
 		_btn_achievements.pressed.connect(_on_tab_achievements)
 	if is_instance_valid(_btn_settings):
 		_btn_settings.pressed.connect(_on_tab_settings)
+
+
 
 	# --- Hover FX for all QuickTabs buttons ---
 	_wire_all_tab_hovers()
@@ -283,6 +288,7 @@ func _show_panel(p: Control) -> void:
 	tw.tween_property(p, "modulate:a", 1.0, SHOW_TIME)
 	_open_panel = p
 
+
 func _toggle_panel(p: Control) -> void:
 	if _open_panel == p and is_instance_valid(p) and p.visible:
 		_hide_all_panels()
@@ -323,6 +329,7 @@ func _on_tab_achievements() -> void:
 
 func _on_tab_settings() -> void:
 	_toggle_or_hide(_panel_settings)
+
 
 # ------- Existing behavior -------
 
