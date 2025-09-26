@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://054b2ce1a5714b6fa13733"]
+[gd_scene load_steps=0 format=3 uid="uid://7jj3bmdicnsm"]
 
 [node name="UpgradesPanel" type="Control"]
 layout_mode = 3
