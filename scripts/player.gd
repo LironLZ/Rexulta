@@ -5,7 +5,6 @@ extends CharacterBody2D
 @export var autorun: bool = true
 @export var gravity_multiplier: float = 1.0
 
-
 # Base damage range (inclusive) BEFORE scaling by Attack. Acts as fallback if weapon data is missing.
 
 @export var min_damage: int = 1
@@ -184,6 +183,12 @@ func _weapon_base_range() -> Vector2i:
 	return weapon_range
 
 
+
+func _weapon_base_range() -> Vector2i:
+	var weapon_range := Economy.weapon_melee_range()
+	if weapon_range.x <= 0 or weapon_range.y <= 0:
+		return Vector2i(min_damage, max(min_damage, max_damage))
+	return weapon_range
 
 func get_current_damage_range() -> Vector2i:
 	var base_range := _weapon_base_range()

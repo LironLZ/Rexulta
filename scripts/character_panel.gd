@@ -102,7 +102,6 @@ func _on_attribute_changed(key: String, _value: int) -> void:
 	if key == "attack" or key == "dex":
 		_refresh_range_hint()
 
-
 # (Optional debug)
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
