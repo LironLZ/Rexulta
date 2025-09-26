@@ -182,12 +182,6 @@ func _weapon_base_range() -> Vector2i:
 		return Vector2i(min_damage, max(min_damage, max_damage))
 	return weapon_range
 
-func _weapon_base_range() -> Vector2i:
-	var weapon_range := Economy.weapon_melee_range()
-	if weapon_range.x <= 0 or weapon_range.y <= 0:
-		return Vector2i(min_damage, max(min_damage, max_damage))
-	return weapon_range
-
 func get_current_damage_range() -> Vector2i:
 	var base_range := _weapon_base_range()
 	return State.get_attack_scaled_range(base_range.x, base_range.y, Economy.weapon_attack_bonus())
