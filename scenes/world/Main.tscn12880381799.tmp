@@ -1,0 +1,107 @@
+[gd_scene load_steps=14 format=3 uid="uid://dmlcgcphchq22"]
+
+[ext_resource type="PackedScene" uid="uid://bmgk1kws23rt3" path="res://scenes/world/Arena.tscn" id="1_0nnu2"]
+[ext_resource type="Script" uid="uid://bnay37ii7meh" path="res://scripts/main.gd" id="1_nciap"]
+[ext_resource type="PackedScene" uid="uid://cf1mgeksoogx7" path="res://scenes/world/MainMenu.tscn" id="2_26o6m"]
+[ext_resource type="PackedScene" uid="uid://d0jcbav62ao31" path="res://scenes/world/FishingZone.tscn" id="2_nciap"]
+[ext_resource type="PackedScene" uid="uid://bqigbve1ao0gm" path="res://scenes/world/MiningZone.tscn" id="3_10578"]
+[ext_resource type="PackedScene" uid="uid://ctr7remluxy4i" path="res://ui/HUD.tscn" id="4_26o6m"]
+[ext_resource type="PackedScene" uid="uid://cso3p3i57p0va" path="res://ui/WeaponPicker.tscn" id="6_10578"]
+[ext_resource type="PackedScene" uid="uid://bma83vfxhal63" path="res://scenes/ui/ArrowMenuButton.tscn" id="7_b3pok"]
+[ext_resource type="Texture2D" uid="uid://c65ypmcj6vm6d" path="res://art/ui/character_button.png" id="8_vanwo"]
+[ext_resource type="Texture2D" uid="uid://b84xfkbjgquc5" path="res://art/ui/skill_book_button.png" id="9_ovuor"]
+[ext_resource type="Texture2D" uid="uid://b5t67k2u6wdpw" path="res://art/ui/fishing_button.png" id="10_om08x"]
+[ext_resource type="Texture2D" uid="uid://blgk5r2snrrat" path="res://art/ui/mining_button.png" id="11_o6ks1"]
+[ext_resource type="Texture2D" uid="uid://c8d2y6g6bnb2r" path="res://art/ui/settings_button.png" id="12_b6xef"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_nciap")
+
+[node name="MainMenu" parent="." instance=ExtResource("2_26o6m")]
+
+[node name="Arena" parent="." instance=ExtResource("1_0nnu2")]
+
+[node name="FishingZone" parent="." instance=ExtResource("2_nciap")]
+
+[node name="MiningZone" parent="." instance=ExtResource("3_10578")]
+
+[node name="Hud" parent="." instance=ExtResource("4_26o6m")]
+layer = 50
+
+[node name="HUDRoot" type="Control" parent="Hud"]
+z_index = 100
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="ArrowMenuButton" parent="Hud/HUDRoot" instance=ExtResource("7_b3pok")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -53.0
+offset_top = -50.0
+offset_right = -12.0
+offset_bottom = -11.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="QuickTabs" type="HBoxContainer" parent="Hud/HUDRoot"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -56.0
+offset_right = 135.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme_override_constants/separation = 16
+
+[node name="BtnUpgrades" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+texture_normal = ExtResource("8_vanwo")
+texture_pressed = ExtResource("8_vanwo")
+texture_hover = ExtResource("8_vanwo")
+texture_disabled = ExtResource("8_vanwo")
+texture_focused = ExtResource("8_vanwo")
+
+[node name="BtnSkills" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+texture_normal = ExtResource("9_ovuor")
+texture_pressed = ExtResource("9_ovuor")
+texture_hover = ExtResource("9_ovuor")
+texture_disabled = ExtResource("9_ovuor")
+texture_focused = ExtResource("9_ovuor")
+
+[node name="BtnFishing" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+texture_normal = ExtResource("10_om08x")
+texture_pressed = ExtResource("10_om08x")
+texture_hover = ExtResource("10_om08x")
+texture_disabled = ExtResource("10_om08x")
+texture_focused = ExtResource("10_om08x")
+
+[node name="BtnMining" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+texture_normal = ExtResource("11_o6ks1")
+texture_pressed = ExtResource("11_o6ks1")
+texture_hover = ExtResource("11_o6ks1")
+texture_disabled = ExtResource("11_o6ks1")
+texture_focused = ExtResource("11_o6ks1")
+
+[node name="BtnSettings" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+texture_normal = ExtResource("12_b6xef")
+texture_pressed = ExtResource("12_b6xef")
+texture_hover = ExtResource("12_b6xef")
+texture_disabled = ExtResource("12_b6xef")
+texture_focused = ExtResource("12_b6xef")
+
+[node name="WeaponPicker" parent="." instance=ExtResource("6_10578")]

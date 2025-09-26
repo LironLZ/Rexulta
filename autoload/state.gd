@@ -51,8 +51,9 @@ var attributes := {
 }
 
 const ATTACK_DAMAGE_PER_POINT := 0.10
-const BASE_CRIT_CHANCE := 0.05
-const CRIT_PER_DEX := 0.001
+const BASE_CRIT_CHANCE := 0.05   # 5% base
+const CRIT_PER_DEX := 0.001      # +0.1% per DEX
+const CRIT_CAP := 0.75           # hard cap (optional)
 
 func get_attr_total(key: String) -> int:
 	var a = attributes.get(key)
@@ -334,18 +335,19 @@ func _backfill_points_from_level() -> void:
 		ability_points = expected
 		ability_points_changed.emit(ability_points)
 
-
 # +10% damage per Attack (rounded up). Optional weapon bonus folds in here
 func get_attack_scaled_range(base_min: int, base_max: int, attack_bonus: int = 0) -> Vector2i:
-	var atk := max(0, get_attr_total("attack") + attack_bonus)
+	var atk = max(0, get_attr_total("attack") + attack_bonus)
 	var mult := 1.0 + ATTACK_DAMAGE_PER_POINT * float(atk)
-	var safe_min := max(0, base_min)
-	var safe_max := max(safe_min, base_max)
+	var safe_min = max(0, base_min)
+	var safe_max = max(safe_min, base_max)
 
 	var new_min := int(ceil(float(safe_min) * mult))
 	var new_max := int(ceil(float(safe_max) * mult))
 	return Vector2i(new_min, new_max)
 
+# Crit chance derived from DEX and extra accuracy
 func get_crit_chance(extra_accuracy: float = 0.0) -> float:
-	var dex_total := float(get_attr_total("dex")) + max(0.0, extra_accuracy)
-
+	var dex_total: float = float(get_attr_total("dex")) + max(0.0, extra_accuracy)
+	var chance: float = BASE_CRIT_CHANCE + dex_total * CRIT_PER_DEX
+	return clamp(chance, 0.0, CRIT_CAP)
