@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ctr7remluxy4i"]
+[gd_scene load_steps=11 format=3 uid="uid://ctr7remluxy4i"]
 
 [ext_resource type="Script" uid="uid://b0m6np48d43l8" path="res://scripts/hud.gd" id="1_1x8ju"]
 [ext_resource type="PackedScene" uid="uid://bdy7drk4k2qom" path="res://scenes/ui/CharacterPanel.tscn" id="2_aaqae"]
@@ -10,18 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://cd0rq0cjlg8j0" path="res://scenes/ui/PrestigePanel.tscn" id="8_92fp4"]
 [ext_resource type="PackedScene" uid="uid://doapx8iuiagkx" path="res://scenes/ui/AchievementsPanel.tscn" id="9_7g3tq"]
 [ext_resource type="PackedScene" uid="uid://b4dfbq47oo0ug" path="res://scenes/ui/SettingsPanel.tscn" id="10_r5s0p"]
-[ext_resource type="Texture2D" uid="uid://71eprqhthme4" path="res://art/ui/settings_menu.png" id="11_37bek"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_37bek"]
-content_margin_left = 16.0
-content_margin_top = 24.0
-content_margin_right = 16.0
-content_margin_bottom = 16.0
-texture = ExtResource("11_37bek")
-texture_margin_left = 16.0
-texture_margin_top = 16.0
-texture_margin_right = 16.0
-texture_margin_bottom = 16.0
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_1x8ju")
@@ -86,19 +74,3 @@ layout_mode = 1
 
 [node name="SettingsPanel" parent="Root/Panels" instance=ExtResource("10_r5s0p")]
 layout_mode = 1
-
-[node name="CenterContainer" type="CenterContainer" parent="Root/Panels/SettingsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SettingsFrame" type="PanelContainer" parent="Root/Panels/SettingsPanel/CenterContainer"]
-custom_minimum_size = Vector2(480, 300)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_37bek")
-
-[node name="SettingsContent" parent="Root/Panels/SettingsPanel/CenterContainer/SettingsFrame" instance=ExtResource("10_r5s0p")]
-layout_mode = 2
