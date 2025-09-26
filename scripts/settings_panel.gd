@@ -7,9 +7,9 @@ const SFX_BUS := "SFX"
 const AMBIENCE_BUS := "Ambience"
 
 const RESOLUTIONS := [
-	{"label": "1280 x 720", "size": Vector2i(1280, 720)},
-	{"label": "1920 x 1080", "size": Vector2i(1920, 1080)},
-	{"label": "2560 x 1440", "size": Vector2i(2560, 1440)},
+	{"label": "1280 x 720", "size": Vector2i(1280, 720)}
+	{"label": "1920 x 1080", "size": Vector2i(1920, 1080)}
+	{"label": "2560 x 1440", "size": Vector2i(2560, 1440)}
 ]
 
 @onready var _music_slider: HSlider = %MusicSlider

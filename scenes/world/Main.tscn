@@ -76,13 +76,6 @@ texture_hover = ExtResource("8_vanwo")
 texture_disabled = ExtResource("8_vanwo")
 texture_focused = ExtResource("8_vanwo")
 
-[node name="BtnBuildings" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
-layout_mode = 2
-texture_normal = ExtResource("9_fyu6d")
-texture_pressed = ExtResource("9_fyu6d")
-texture_hover = ExtResource("9_fyu6d")
-texture_disabled = ExtResource("9_fyu6d")
-texture_focused = ExtResource("9_fyu6d")
 
 [node name="BtnSkills" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
