@@ -181,6 +181,7 @@ layout_mode = 2
 text = "Graphics"
 
 [node name="ResolutionRow" type="HBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content/GraphicsSection"]
+
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
