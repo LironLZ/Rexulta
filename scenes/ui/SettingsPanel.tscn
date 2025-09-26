@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b4dfbq47oo0ug"]
 
 [ext_resource type="Script" uid="uid://b63sy8nawh6df" path="res://scripts/settings_panel.gd" id="1_0kbyh"]
-[ext_resource type="Texture2D" uid="uid://b8kx18nh45wwf" path="res://art/ui/ingame_gui.png" id="2_4e7k4"]
+[ext_resource type="Texture2D" uid="uid://71eprqhthme4" path="res://art/ui/settings_menu.png" id="2_cjf3c"]
 
 [node name="SettingsPanel" type="Control"]
 layout_mode = 3
@@ -27,7 +27,7 @@ theme_override_constants/margin_bottom = 32
 
 [node name="Panel" type="NinePatchRect" parent="Margin"]
 layout_mode = 2
-texture = ExtResource("2_4e7k4")
+texture = ExtResource("2_cjf3c")
 patch_margin_left = 12
 patch_margin_top = 20
 patch_margin_right = 12
