@@ -10,31 +10,21 @@ extends CanvasLayer
 @onready var ascend_b: Button = $Root/TopBar/AscendBtn
 
 # ------- Drawer bits (live in Main.tscn under Hud/HUDRoot) -------
-@onready var _arrow_btn:        TextureButton = $HUDRoot/ArrowMenuButton
-@onready var _tabs_root:        Control       = $HUDRoot/QuickTabs
-@onready var _btn_character:    TextureButton = $HUDRoot/QuickTabs/BtnCharacter
-@onready var _btn_buildings:    TextureButton = $HUDRoot/QuickTabs/BtnBuildings
-@onready var _btn_upgrades:     TextureButton = $HUDRoot/QuickTabs/BtnUpgrades
-@onready var _btn_skills:       TextureButton = $HUDRoot/QuickTabs/BtnSkills
-@onready var _btn_fishing:      TextureButton = $HUDRoot/QuickTabs/BtnFishing
-@onready var _btn_mining:       TextureButton = $HUDRoot/QuickTabs/BtnMining
-@onready var _btn_prestige:     TextureButton = $HUDRoot/QuickTabs/BtnPrestige
-@onready var _btn_achievements: TextureButton = $HUDRoot/QuickTabs/BtnAchievements
-@onready var _btn_settings:     TextureButton = $HUDRoot/QuickTabs/BtnSettings
-
-
+@onready var _arrow_btn:     TextureButton = $HUDRoot/ArrowMenuButton
+@onready var _tabs_root:     Control       = $HUDRoot/QuickTabs
+@onready var _btn_character: TextureButton = $HUDRoot/QuickTabs/BtnCharacter
+@onready var _btn_skills:    TextureButton = $HUDRoot/QuickTabs/BtnSkills
+@onready var _btn_fishing:   TextureButton = $HUDRoot/QuickTabs/BtnFishing
+@onready var _btn_mining:    TextureButton = $HUDRoot/QuickTabs/BtnMining
+@onready var _btn_settings:  TextureButton = $HUDRoot/QuickTabs/BtnSettings
 
 # ------- Panels (live in HUD.tscn under Root) -------
-@onready var _panels_root:        Control = $Root/Panels
-@onready var _panel_character:    Control = $Root/Panels/CharacterPanel
-@onready var _panel_buildings:    Control = $Root/Panels/BuildingsPanel
-@onready var _panel_upgrades:     Control = $Root/Panels/UpgradesPanel
-@onready var _panel_skills:       Control = $Root/Panels/SkillsPanel
-@onready var _panel_fishing:      Control = $Root/Panels/FishingPanel
-@onready var _panel_mining:       Control = $Root/Panels/MiningPanel
-@onready var _panel_prestige:     Control = $Root/Panels/PrestigePanel
-@onready var _panel_achievements: Control = $Root/Panels/AchievementsPanel
-@onready var _panel_settings:     Control = $Root/Panels/SettingsPanel
+@onready var _panels_root:     Control = $Root/Panels
+@onready var _panel_character: Control = $Root/Panels/CharacterPanel
+@onready var _panel_skills:    Control = $Root/Panels/SkillsPanel
+@onready var _panel_fishing:   Control = $Root/Panels/FishingPanel
+@onready var _panel_mining:    Control = $Root/Panels/MiningPanel
+@onready var _panel_settings:  Control = $Root/Panels/SettingsPanel
 
 
 # Drawer config
@@ -118,23 +108,14 @@ func _ready() -> void:
 	# Hook up quick-tab buttons (press actions)
 	if is_instance_valid(_btn_character):
 		_btn_character.pressed.connect(_on_tab_character)
-	if is_instance_valid(_btn_buildings):
-		_btn_buildings.pressed.connect(_on_tab_buildings)
-	if is_instance_valid(_btn_upgrades):
-		_btn_upgrades.pressed.connect(_on_tab_upgrades)
 	if is_instance_valid(_btn_skills):
 		_btn_skills.pressed.connect(_on_tab_skills)
 	if is_instance_valid(_btn_fishing):
 		_btn_fishing.pressed.connect(_on_tab_fishing)
 	if is_instance_valid(_btn_mining):
 		_btn_mining.pressed.connect(_on_tab_mining)
-	if is_instance_valid(_btn_prestige):
-		_btn_prestige.pressed.connect(_on_tab_prestige)
-	if is_instance_valid(_btn_achievements):
-		_btn_achievements.pressed.connect(_on_tab_achievements)
 	if is_instance_valid(_btn_settings):
 		_btn_settings.pressed.connect(_on_tab_settings)
-
 
 
 	# --- Hover FX for all QuickTabs buttons ---
@@ -306,11 +287,6 @@ func _toggle_or_hide(panel: Control) -> void:
 func _on_tab_character() -> void:
 	_toggle_or_hide(_panel_character)
 
-func _on_tab_buildings() -> void:
-	_toggle_or_hide(_panel_buildings)
-
-func _on_tab_upgrades() -> void:
-	_toggle_or_hide(_panel_upgrades)
 
 func _on_tab_skills() -> void:
 	_toggle_or_hide(_panel_skills)
@@ -320,12 +296,6 @@ func _on_tab_fishing() -> void:
 
 func _on_tab_mining() -> void:
 	_toggle_or_hide(_panel_mining)
-
-func _on_tab_prestige() -> void:
-	_toggle_or_hide(_panel_prestige)
-
-func _on_tab_achievements() -> void:
-	_toggle_or_hide(_panel_achievements)
 
 func _on_tab_settings() -> void:
 	_toggle_or_hide(_panel_settings)
@@ -352,11 +322,11 @@ func _refresh() -> void:
 		inv_l.text  = "Fish: %d   Ore: %d" % [State.fish, State.ore]
 
 	if is_instance_valid(fish_b):
-		fish_b.visible   = State.fishing_unlocked
+		fish_b.visible   = true
 	if is_instance_valid(mine_b):
-		mine_b.visible   = State.mining_unlocked
+		mine_b.visible   = true
 	if is_instance_valid(ascend_b):
-		ascend_b.visible = State.ascend_unlocked
+		ascend_b.visible = true
 
 	if is_instance_valid(_btn_fishing):
 		_btn_fishing.visible = State.fishing_unlocked

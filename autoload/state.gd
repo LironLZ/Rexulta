@@ -51,7 +51,6 @@ var attributes := {
 }
 
 const ATTACK_DAMAGE_PER_POINT := 0.10
-
 const BASE_CRIT_CHANCE := 0.05
 const CRIT_PER_DEX := 0.001
 
@@ -338,17 +337,16 @@ func _backfill_points_from_level() -> void:
 
 # +10% damage per Attack (rounded up). Optional weapon bonus folds in here
 func get_attack_scaled_range(base_min: int, base_max: int, attack_bonus: int = 0) -> Vector2i:
-
-	var atk = max(0, get_attr_total("attack") + attack_bonus)
+	var atk := max(0, get_attr_total("attack") + attack_bonus)
 	var mult := 1.0 + ATTACK_DAMAGE_PER_POINT * float(atk)
-	var safe_min = max(0, base_min)
-	var safe_max = max(safe_min, base_max)
+	var safe_min := max(0, base_min)
+	var safe_max := max(safe_min, base_max)
 
 	var new_min := int(ceil(float(safe_min) * mult))
 	var new_max := int(ceil(float(safe_max) * mult))
 	return Vector2i(new_min, new_max)
 
-
 func get_crit_chance(extra_accuracy: float = 0.0) -> float:
-	var dex_total = float(get_attr_total("dex")) + max(0.0, extra_accuracy)
+	var dex_total := float(get_attr_total("dex")) + max(0.0, extra_accuracy)
+
 	return clampf(BASE_CRIT_CHANCE + CRIT_PER_DEX * dex_total, 0.0, 0.999)
