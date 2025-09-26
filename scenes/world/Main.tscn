@@ -55,12 +55,12 @@ anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 30.0
 offset_top = -56.0
-offset_right = 135.0
+offset_right = 280.0
 offset_bottom = -16.0
 grow_vertical = 0
-theme_override_constants/separation = 16
+theme_override_constants/separation = 8
 
-[node name="BtnUpgrades" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+[node name="BtnCharacter" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
 texture_normal = ExtResource("8_vanwo")
 texture_pressed = ExtResource("8_vanwo")
@@ -68,13 +68,25 @@ texture_hover = ExtResource("8_vanwo")
 texture_disabled = ExtResource("8_vanwo")
 texture_focused = ExtResource("8_vanwo")
 
-[node name="BtnCrafting" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+[node name="BtnBuildings" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnUpgrades" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnSkills" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
 
 [node name="BtnFishing" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
 
 [node name="BtnMining" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnPrestige" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
+layout_mode = 2
+
+[node name="BtnAchievements" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
 layout_mode = 2
 
 [node name="BtnSettings" type="TextureButton" parent="Hud/HUDRoot/QuickTabs"]
