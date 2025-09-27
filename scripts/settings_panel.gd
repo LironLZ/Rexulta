@@ -202,8 +202,7 @@ func _on_resolution_selected(index: int) -> void:
 		_save_settings()
 
 func _on_save_pressed() -> void:
-	if Engine.has_singleton("State"):
-		State.save()
+	State.save()
 	_save_settings()
 
 func _on_reset_pressed() -> void:
@@ -213,8 +212,7 @@ func _on_reset_pressed() -> void:
 				_on_reset_confirmed()
 
 func _on_reset_confirmed() -> void:
-		if Engine.has_singleton("State"):
-				State.reset_save()
+		State.reset_save()
 		_apply_settings_to_ui()
 
 func _on_quit_pressed() -> void:
