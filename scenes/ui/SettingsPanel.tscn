@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://71eprqhthme4" path="res://art/ui/settings_menu.png" id="2_cjf3c"]
 
 [node name="SettingsPanel" type="Control"]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -18,6 +18,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -20.0
+offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 32
@@ -33,54 +35,54 @@ patch_margin_top = 20
 patch_margin_right = 12
 patch_margin_bottom = 12
 
-[node name="InnerPad" type="MarginContainer" parent="Margin/Panel"]
-layout_mode = 0
+[node name="InnerPad" type="MarginContainer" parent="Margin"]
+layout_mode = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 24
 
-[node name="Scroll" type="ScrollContainer" parent="Margin/Panel/InnerPad"]
+[node name="Scroll" type="ScrollContainer" parent="Margin/InnerPad"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Content" type="VBoxContainer" parent="Margin/Panel/InnerPad/Scroll"]
+[node name="Content" type="VBoxContainer" parent="Margin/InnerPad/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 16
 
-[node name="Title" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="Title" type="Label" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 text = "Settings"
 
-[node name="TitleSeparator" type="HSeparator" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="TitleSeparator" type="HSeparator" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 
-[node name="AudioSection" type="VBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="AudioSection" type="VBoxContainer" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AudioLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection"]
+[node name="AudioLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection"]
 layout_mode = 2
 text = "Audio"
 
-[node name="AudioList" type="VBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection"]
+[node name="AudioList" type="VBoxContainer" parent="Margin/InnerPad/Scroll/Content/AudioSection"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="MusicRow" type="HBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList"]
+[node name="MusicRow" type="HBoxContainer" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="MusicLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/MusicRow"]
+[node name="MusicLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/MusicRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Music volume"
 vertical_alignment = 1
 
-[node name="MusicSlider" type="HSlider" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/MusicRow"]
+[node name="MusicSlider" type="HSlider" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/MusicRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -89,24 +91,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="MusicValue" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/MusicRow"]
+[node name="MusicValue" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/MusicRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="SfxRow" type="HBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList"]
+[node name="SfxRow" type="HBoxContainer" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="SfxLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/SfxRow"]
+[node name="SfxLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/SfxRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Sound volume"
 vertical_alignment = 1
 
-[node name="SfxSlider" type="HSlider" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/SfxRow"]
+[node name="SfxSlider" type="HSlider" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/SfxRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -115,24 +117,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="SfxValue" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/SfxRow"]
+[node name="SfxValue" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/SfxRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="AmbienceRow" type="HBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList"]
+[node name="AmbienceRow" type="HBoxContainer" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="AmbienceLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/AmbienceRow"]
+[node name="AmbienceLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/AmbienceRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Ambience volume"
 vertical_alignment = 1
 
-[node name="AmbienceSlider" type="HSlider" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/AmbienceRow"]
+[node name="AmbienceSlider" type="HSlider" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/AmbienceRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -141,67 +143,67 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="AmbienceValue" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection/AudioList/AmbienceRow"]
+[node name="AmbienceValue" type="Label" parent="Margin/InnerPad/Scroll/Content/AudioSection/AudioList/AmbienceRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="MuteToggle" type="CheckBox" parent="Margin/Panel/InnerPad/Scroll/Content/AudioSection"]
+[node name="MuteToggle" type="CheckBox" parent="Margin/InnerPad/Scroll/Content/AudioSection"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Mute audio"
 
-[node name="AudioSeparator" type="HSeparator" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="AudioSeparator" type="HSeparator" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 
-[node name="GraphicsSection" type="VBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="GraphicsSection" type="VBoxContainer" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="GraphicsLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/GraphicsSection"]
+[node name="GraphicsLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/GraphicsSection"]
 layout_mode = 2
 text = "Graphics"
 
-[node name="ResolutionRow" type="HBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content/GraphicsSection"]
+[node name="ResolutionRow" type="HBoxContainer" parent="Margin/InnerPad/Scroll/Content/GraphicsSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="ResolutionLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/GraphicsSection/ResolutionRow"]
+[node name="ResolutionLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/GraphicsSection/ResolutionRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Resolution"
 vertical_alignment = 1
 
-[node name="ResolutionOption" type="OptionButton" parent="Margin/Panel/InnerPad/Scroll/Content/GraphicsSection/ResolutionRow"]
+[node name="ResolutionOption" type="OptionButton" parent="Margin/InnerPad/Scroll/Content/GraphicsSection/ResolutionRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 
-[node name="GraphicsSeparator" type="HSeparator" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="GraphicsSeparator" type="HSeparator" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 
-[node name="SystemSection" type="VBoxContainer" parent="Margin/Panel/InnerPad/Scroll/Content"]
+[node name="SystemSection" type="VBoxContainer" parent="Margin/InnerPad/Scroll/Content"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="SystemLabel" type="Label" parent="Margin/Panel/InnerPad/Scroll/Content/SystemSection"]
+[node name="SystemLabel" type="Label" parent="Margin/InnerPad/Scroll/Content/SystemSection"]
 layout_mode = 2
 text = "System"
 
-[node name="SaveButton" type="Button" parent="Margin/Panel/InnerPad/Scroll/Content/SystemSection"]
+[node name="SaveButton" type="Button" parent="Margin/InnerPad/Scroll/Content/SystemSection"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Save Game"
 
-[node name="ResetButton" type="Button" parent="Margin/Panel/InnerPad/Scroll/Content/SystemSection"]
+[node name="ResetButton" type="Button" parent="Margin/InnerPad/Scroll/Content/SystemSection"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Reset Save"
 
-[node name="QuitButton" type="Button" parent="Margin/Panel/InnerPad/Scroll/Content/SystemSection"]
+[node name="QuitButton" type="Button" parent="Margin/InnerPad/Scroll/Content/SystemSection"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Quit Game"
