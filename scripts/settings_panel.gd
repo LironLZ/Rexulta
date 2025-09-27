@@ -23,6 +23,7 @@ const RESOLUTIONS := [
 @onready var _save_button: Button = %SaveButton
 @onready var _reset_button: Button = %ResetButton
 @onready var _quit_button: Button = %QuitButton
+@onready var _reset_dialog: ConfirmationDialog = %ResetConfirmDialog
 
 var _settings := {
 	"music": 1.0,
@@ -66,10 +67,12 @@ func _connect_signals() -> void:
 		_resolution_option.item_selected.connect(_on_resolution_selected)
 	if is_instance_valid(_save_button):
 		_save_button.pressed.connect(_on_save_pressed)
-	if is_instance_valid(_reset_button):
-		_reset_button.pressed.connect(_on_reset_pressed)
-	if is_instance_valid(_quit_button):
-		_quit_button.pressed.connect(_on_quit_pressed)
+        if is_instance_valid(_reset_button):
+                _reset_button.pressed.connect(_on_reset_pressed)
+        if is_instance_valid(_quit_button):
+                _quit_button.pressed.connect(_on_quit_pressed)
+        if is_instance_valid(_reset_dialog):
+                _reset_dialog.confirmed.connect(_on_reset_confirmed)
 
 func _load_settings() -> void:
 	var cfg := ConfigFile.new()
@@ -204,9 +207,15 @@ func _on_save_pressed() -> void:
 	_save_settings()
 
 func _on_reset_pressed() -> void:
-	if Engine.has_singleton("State"):
-		State.reset_save()
-	_apply_settings_to_ui()
+        if is_instance_valid(_reset_dialog):
+                _reset_dialog.popup_centered()
+        else:
+                _on_reset_confirmed()
+
+func _on_reset_confirmed() -> void:
+        if Engine.has_singleton("State"):
+                State.reset_save()
+        _apply_settings_to_ui()
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

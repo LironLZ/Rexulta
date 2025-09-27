@@ -38,65 +38,65 @@ func _toggle_menu(on: bool) -> void:
 		_toggle_node(child, on)
 
 func _toggle_node(n: Node, on: bool) -> void:
-		if n is CanvasItem:
-				n.visible = on
-		n.process_mode = Node.PROCESS_MODE_WHEN_PAUSED if on else Node.PROCESS_MODE_DISABLED
-		for c in n.get_children():
-				_toggle_node(c, on)
+        if n is CanvasItem:
+                n.visible = on
+        n.process_mode = Node.PROCESS_MODE_WHEN_PAUSED if on else Node.PROCESS_MODE_DISABLED
+        for c in n.get_children():
+                _toggle_node(c, on)
 
 func _ensure_settings_panel() -> Control:
-		if is_instance_valid(_settings_panel):
-				return _settings_panel
-		if !is_instance_valid(_menu_root):
-				return null
-		var inst := SETTINGS_PANEL_SCENE.instantiate()
-		if inst == null:
-				return null
-		_menu_root.add_child(inst)
-		if inst is Control:
-				var ctrl := inst as Control
-				ctrl.set_anchors_preset(Control.PRESET_FULL_RECT, true)
-				ctrl.visible = false
-				ctrl.process_mode = Node.PROCESS_MODE_DISABLED
-				_settings_panel = ctrl
-				return _settings_panel
-		inst.queue_free()
-		return null
+        if is_instance_valid(_settings_panel):
+                return _settings_panel
+        if !is_instance_valid(_menu_root):
+                return null
+        var inst := SETTINGS_PANEL_SCENE.instantiate()
+        if inst == null:
+                return null
+        _menu_root.add_child(inst)
+        if inst is Control:
+                var ctrl := inst as Control
+                ctrl.set_anchors_preset(Control.PRESET_FULL_RECT, true)
+                ctrl.visible = false
+                ctrl.process_mode = Node.PROCESS_MODE_DISABLED
+                _settings_panel = ctrl
+                return _settings_panel
+        inst.queue_free()
+        return null
 
 func _hide_settings_panel(show_menu := true) -> void:
-		if is_instance_valid(_settings_panel):
-				_settings_panel.visible = false
-				_settings_panel.process_mode = Node.PROCESS_MODE_DISABLED
-		if show_menu and is_instance_valid(_menu):
-				_menu.visible = true
-				_menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+        if is_instance_valid(_settings_panel):
+                _settings_panel.visible = false
+                _settings_panel.process_mode = Node.PROCESS_MODE_DISABLED
+        if show_menu and is_instance_valid(_menu):
+                _menu.visible = true
+                _menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 
 func _set_hud_visible(v: bool) -> void:
-		_hud_layer.process_mode = Node.PROCESS_MODE_INHERIT if v else Node.PROCESS_MODE_DISABLED
-		for child in _hud_layer.get_children():
-				if child is CanvasItem:
-						child.visible = v
+        _hud_layer.process_mode = Node.PROCESS_MODE_INHERIT if v else Node.PROCESS_MODE_DISABLED
+        for child in _hud_layer.get_children():
+                if child is CanvasItem:
+                        child.visible = v
 
 func _enter_menu() -> void:
-		_hide_settings_panel()
-		_set_gameplay_enabled(false)
-		_toggle_menu(true)          # <<< show menu subtree
-		_set_hud_visible(false)
-		get_tree().paused = true
-		if is_instance_valid(_menu) and _menu.has_method("focus_default"):
-			_menu.focus_default()
-		if is_instance_valid(_hud):
-			_hud.visible = false 
+        _hide_settings_panel()
+        _set_gameplay_enabled(false)
+        _toggle_menu(true)          # <<< show menu subtree
+        _set_hud_visible(false)
+        get_tree().paused = true
+        if is_instance_valid(_menu) and _menu.has_method("focus_default"):
+		_menu.focus_default()
+	if is_instance_valid(_hud):
+		_hud.visible = false 
 
 func _start_game() -> void:
-		_hide_settings_panel(false)
-		_toggle_menu(false)         # <<< hide/disable *entire* menu subtree
-		_set_gameplay_enabled(true)
-		_set_hud_visible(true)
-		get_tree().paused = false
-		if is_instance_valid(_hud):
-			_hud.visible = true 
-		_apply_mode(State.mode)
+        _hide_settings_panel(false)
+        _toggle_menu(false)         # <<< hide/disable *entire* menu subtree
+        _set_gameplay_enabled(true)
+        _set_hud_visible(true)
+        get_tree().paused = false
+        if is_instance_valid(_hud):
+		_hud.visible = true 
+	_apply_mode(State.mode)
 
 func _set_gameplay_enabled(enabled: bool) -> void:
 	var pm := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
@@ -121,14 +121,14 @@ func _on_play_requested() -> void:
 	_start_game()
 
 func _on_settings_requested() -> void:
-		var panel := _ensure_settings_panel()
-		if panel == null:
-				return
-		if is_instance_valid(_menu):
-				_menu.visible = false
-				_menu.process_mode = Node.PROCESS_MODE_DISABLED
-		panel.visible = true
-		panel.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+        var panel := _ensure_settings_panel()
+        if panel == null:
+                return
+        if is_instance_valid(_menu):
+                _menu.visible = false
+                _menu.process_mode = Node.PROCESS_MODE_DISABLED
+        panel.visible = true
+        panel.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 
 func _on_quit_requested() -> void:
 	if OS.has_feature("web"): return
