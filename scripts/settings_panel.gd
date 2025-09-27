@@ -67,12 +67,12 @@ func _connect_signals() -> void:
 		_resolution_option.item_selected.connect(_on_resolution_selected)
 	if is_instance_valid(_save_button):
 		_save_button.pressed.connect(_on_save_pressed)
-        if is_instance_valid(_reset_button):
-                _reset_button.pressed.connect(_on_reset_pressed)
-        if is_instance_valid(_quit_button):
-                _quit_button.pressed.connect(_on_quit_pressed)
-        if is_instance_valid(_reset_dialog):
-                _reset_dialog.confirmed.connect(_on_reset_confirmed)
+		if is_instance_valid(_reset_button):
+				_reset_button.pressed.connect(_on_reset_pressed)
+		if is_instance_valid(_quit_button):
+				_quit_button.pressed.connect(_on_quit_pressed)
+		if is_instance_valid(_reset_dialog):
+				_reset_dialog.confirmed.connect(_on_reset_confirmed)
 
 func _load_settings() -> void:
 	var cfg := ConfigFile.new()
@@ -207,15 +207,15 @@ func _on_save_pressed() -> void:
 	_save_settings()
 
 func _on_reset_pressed() -> void:
-        if is_instance_valid(_reset_dialog):
-                _reset_dialog.popup_centered()
-        else:
-                _on_reset_confirmed()
+		if is_instance_valid(_reset_dialog):
+				_reset_dialog.popup_centered()
+		else:
+				_on_reset_confirmed()
 
 func _on_reset_confirmed() -> void:
-        if Engine.has_singleton("State"):
-                State.reset_save()
-        _apply_settings_to_ui()
+		if Engine.has_singleton("State"):
+				State.reset_save()
+		_apply_settings_to_ui()
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

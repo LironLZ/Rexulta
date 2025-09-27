@@ -211,6 +211,5 @@ text = "Quit Game"
 [node name="ResetConfirmDialog" type="ConfirmationDialog" parent="."]
 unique_name_in_owner = true
 title = "Reset Save?"
-dialog_text = "Are you sure you want to reset your save? This cannot be undone."
 ok_button_text = "Yes, reset"
-cancel_button_text = "Cancel"
+dialog_text = "Are you sure you want to reset your save? This cannot be undone."
