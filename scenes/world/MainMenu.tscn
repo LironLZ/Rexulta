@@ -80,7 +80,6 @@ alignment = 1
 
 [node name="Play" type="TextureButton" parent="CanvasLayer/MenuRoot/UIRoot/CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-focus_mode = 0
 texture_normal = ExtResource("3_owee5")
 texture_pressed = ExtResource("4_if2ld")
 texture_hover = ExtResource("5_7tgft")

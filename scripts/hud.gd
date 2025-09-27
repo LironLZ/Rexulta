@@ -4,10 +4,6 @@ extends CanvasLayer
 @onready var gold_l:   Label  = $Root/StatsBox/GoldLabel
 @onready var lvl_l:    Label  = $Root/StatsBox/LvlLabel
 @onready var inv_l:    Label  = $Root/StatsBox/InvLabel
-@onready var arena_b:  Button = $Root/TopBar/ArenaBtn
-@onready var fish_b:   Button = $Root/TopBar/FishingBtn
-@onready var mine_b:   Button = $Root/TopBar/MiningBtn
-@onready var ascend_b: Button = $Root/TopBar/AscendBtn
 
 # ------- Drawer bits (Main.tscn → Hud/HUDRoot) -------
 @onready var _arrow_btn: TextureButton = $HUDRoot/ArrowMenuButton
@@ -101,11 +97,7 @@ func _ready() -> void:
 		_panels_root.z_index = 200
 		_hide_all_panels(true)
 
-	# Optional top bar signals
-	if is_instance_valid(arena_b):  arena_b.pressed.connect(_on_arena)
-	if is_instance_valid(fish_b):   fish_b.pressed.connect(_on_fishing)
-	if is_instance_valid(mine_b):   mine_b.pressed.connect(_on_mining)
-	if is_instance_valid(ascend_b): ascend_b.pressed.connect(_on_ascend)
+
 
 	# State signals for stats text
 	if Engine.has_singleton("State"):

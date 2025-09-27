@@ -149,8 +149,8 @@ func _set_master_mute(v: bool) -> void:
 		return
 	AudioServer.set_bus_mute(idx, v)
 
-func _apply_resolution(size: Vector2i) -> void:
-	if size.x <= 0 or size.y <= 0:
+func _apply_resolution(target_size: Vector2i) -> void:
+	if target_size.x <= 0 or size.y <= 0:
 		return
 	if Engine.has_singleton("Display"):
 		Display.set_window_size(size)

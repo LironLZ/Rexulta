@@ -74,3 +74,5 @@ layout_mode = 1
 
 [node name="SettingsPanel" parent="Root/Panels" instance=ExtResource("10_r5s0p")]
 layout_mode = 1
+
+[editable path="Root/Panels/SettingsPanel"]
