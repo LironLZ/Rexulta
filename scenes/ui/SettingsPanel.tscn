@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://71eprqhthme4" path="res://art/ui/settings_menu.png" id="2_cjf3c"]
 
 [node name="SettingsPanel" type="Control"]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
